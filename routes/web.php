@@ -9,6 +9,20 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TraceController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\SocieteController;
+use App\Http\Controllers\ActifController;
+use App\Http\Controllers\ComposantController;
+use App\Http\Controllers\ConsommableController;
+use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\EmplacementController;
+use App\Http\Controllers\FournisseurController;
+use App\Http\Controllers\FabricantController;
+use App\Http\Controllers\ProjetController;
+use App\Http\Controllers\ModelController;
+use App\Http\Controllers\EtatController;
+use App\Http\Controllers\UtilisateurController;
+use App\Http\Controllers\AccessoireController;
+use App\Http\Controllers\KitController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -97,5 +111,88 @@ Route::middleware([App\Http\Middleware\AuthECOM::class])->group(function () {
     */
     Route::get('/listsoc', [SocieteController::class, 'getsoc'])->name('listSoc');
     Route::post('/soc', [SocieteController::class, 'setsoc'])->name('AddSoc');
+
+
+
+    Route::get('/composants', [ComposantController::class, 'index'])->name('composants');
+    Route::get('/consommables', [ConsommableController::class, 'index'])->name('consommables');
+    Route::get('/categories', [CategorieController::class, 'index'])->name('categories');
+    Route::get('/emplacements', [EmplacementController::class, 'index'])->name('emplacements');
+    Route::get('/fournisseurs', [FournisseurController::class, 'index'])->name('fournisseurs');
+    Route::get('/fabricants', [FabricantController::class, 'index'])->name('fabricants');
+    Route::get('/projets', [ProjetController::class, 'index'])->name('projets');
+    Route::get('/modeles', [ModelController::class, 'index'])->name('modeles');
+    Route::get('/etats', [EtatController::class, 'index'])->name('etats');
+    Route::get('/utilisateurs', [UtilisateurController::class, 'index'])->name('utilisateurs');
+    Route::get('/accessoires', [AccessoireController::class, 'index'])->name('accessoires');
+    Route::get('/kits', [KitController::class, 'index'])->name('kits');
+
+
+
+
+
+    Route::prefix('actifs')->group(function () {
+        Route::get('/', [ActifController::class, 'index'])->name('actifs');
+        Route::post('/', [ActifController::class, 'store'])->name('actifs.store');
+        Route::get('/{id}', [ActifController::class, 'show']);
+        Route::put('/{id}', [ActifController::class, 'update']);
+        Route::delete('/{id}', [ActifController::class, 'destroy']);
+
+        // Fonctionnalités spécifiques
+        Route::put('/{idActif}/affecter-projet/{idProjet}', [ActifController::class, 'affecterProjet']);
+        Route::put('/{idActif}/changer-statut/{statut}', [ActifController::class, 'changerStatut']);
+        Route::get('/search', [ActifController::class, 'search'])->name('actifs.search');
+
+    });
+
+    Route::prefix('accessoires')->group(function () {
+        Route::get('/', [AccessoireController::class, 'index'])->name('accessoires'); // pour afficher
+        Route::post('/', [AccessoireController::class, 'store'])->name('accessoires.store'); // pour ajouter
+        Route::get('/{id}', [AccessoireController::class, 'show'])->name('accessoires.show');
+        Route::put('/{id}', [AccessoireController::class, 'update'])->name('accessoires.update');
+        Route::delete('/{id}', [AccessoireController::class, 'destroy'])->name('accessoires.destroy');
+        Route::get('/accessoires/search', [AccessoireController::class, 'search'])->name('accessoires.search');
+
+        // Associer un accessoire à un actif
+        Route::put('/{idAccessoire}/associer-actif/{idActif}', [AccessoireController::class, 'associerActif'])->name('accessoires.associer');
+    });
+
+    Route::prefix('projets')->group(function () {
+        Route::get('/', [ProjetController::class, 'index'])->name('projets.index'); // Liste
+        Route::get('/create', [ProjetController::class, 'create'])->name('projets.create'); // Formulaire création
+        Route::post('/', [ProjetController::class, 'store'])->name('projets.store'); // Enregistrer
+        Route::get('/{projet}/edit', [ProjetController::class, 'edit'])->name('projets.edit'); // Formulaire édition
+        Route::put('/{projet}', [ProjetController::class, 'update'])->name('projets.update'); // Mettre à jour
+        Route::delete('/{projet}', [ProjetController::class, 'destroy'])->name('projets.destroy'); // Supprimer
+
+        // Activation / Désactivation
+        Route::put('/{projet}/toggle', [ProjetController::class, 'toggleActif'])->name('projets.toggle');
+    });
+
+
+    Route::prefix('categories')->group(function () {
+        Route::get('/', [CategorieController::class, 'index'])->name('categories.index'); // Liste
+        Route::get('/create', [CategorieController::class, 'create'])->name('categories.create'); // Formulaire création
+        Route::post('/', [CategorieController::class, 'store'])->name('categories.store'); // Enregistrer
+        Route::get('/{categorie}/edit', [CategorieController::class, 'edit'])->name('categories.edit'); // Formulaire édition
+        Route::put('/{categorie}', [CategorieController::class, 'update'])->name('categories.update'); // Mettre à jour
+        Route::delete('/{categorie}', [CategorieController::class, 'destroy'])->name('categories.destroy'); // Supprimer
+
+        // Activation / Désactivation
+
+        // Recherche
+        Route::get('/search', [CategorieController::class, 'search'])->name('categories.search');
+    });
+
+
+
+Route::prefix('kits')->group(function () {
+    Route::get('/', [KitController::class, 'index'])->name('kits.index'); // Liste
+    Route::get('/create', [KitController::class, 'create'])->name('kits.create'); // Formulaire création
+    Route::post('/', [KitController::class, 'store'])->name('kits.store'); // Enregistrer
+    Route::get('/{kit}/edit', [KitController::class, 'edit'])->name('kits.edit'); // Formulaire édition
+    Route::put('/{kit}', [KitController::class, 'update'])->name('kits.update'); // Mettre à jour
+    Route::delete('/{kit}', [KitController::class, 'destroy'])->name('kits.destroy'); // Supprimer
+});
 
 });
