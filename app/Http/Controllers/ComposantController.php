@@ -3,89 +3,63 @@
 namespace App\Http\Controllers;
 
 use App\Models\Composant;
+use App\Models\Categorie;
+use App\Models\Emplacement;
+use App\Models\Fournisseur;
+use App\Models\Fabricant;
 use Illuminate\Http\Request;
 
 class ComposantController extends Controller
 {
     public function index()
     {
-        return Composant::with(['categorie', 'emplacement', 'fournisseur', 'fabricant'])->get();
+        $list = Composant::with(['categorie', 'emplacement', 'fournisseur', 'fabricant'])->paginate(10);
+        $categories = Categorie::all();
+        $emplacements = Emplacement::all();
+        $fournisseurs = Fournisseur::all();
+        $fabricants = Fabricant::all();
+        return view('composants.index', compact('list', 'categories', 'emplacements', 'fournisseurs', 'fabricants'));
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nom' => 'required|string',
-            'categorie_id' => 'required|exists:categories,id',
-            'quantite' => 'integer',
-            'qte_min' => 'nullable|integer',
-            'serial' => 'nullable|string',
-            'fabricant_id' => 'nullable|exists:fabricants,id',
-            'numero_model' => 'nullable|string',
-            'emplacement_id' => 'required|exists:emplacements,id',
-            'fournisseur_id' => 'nullable|exists:fournisseurs,id',
-            'num_commande' => 'nullable|string',
-            'date_achat' => 'nullable|date',
-            'cout_achat' => 'nullable|numeric',
-            'notes' => 'nullable|string',
-            'images' => 'nullable|string',
-        ]);
-
-        return Composant::create($validated);
+        Composant::create($request->all());
+        return redirect()->route('composants.index')->with('success', 'Composant ajouté avec succès');
     }
 
-    public function show($id)
+    public function update(Request $request, Composant $composant)
     {
-        return Composant::with(['categorie', 'emplacement', 'fournisseur', 'fabricant'])->findOrFail($id);
+        $composant->update($request->all());
+        return redirect()->route('composants.index')->with('success', 'Composant mis à jour');
     }
 
-    public function update(Request $request, $id)
+    public function destroy(Composant $composant)
     {
-        $composant = Composant::findOrFail($id);
-        $validated = $request->validate([
-            'nom' => 'required|string',
-            'categorie_id' => 'required|exists:categories,id',
-            'quantite' => 'integer',
-            'qte_min' => 'nullable|integer',
-            'serial' => 'nullable|string',
-            'fabricant_id' => 'nullable|exists:fabricants,id',
-            'numero_model' => 'nullable|string',
-            'emplacement_id' => 'required|exists:emplacements,id',
-            'fournisseur_id' => 'nullable|exists:fournisseurs,id',
-            'num_commande' => 'nullable|string',
-            'date_achat' => 'nullable|date',
-            'cout_achat' => 'nullable|numeric',
-            'notes' => 'nullable|string',
-            'images' => 'nullable|string',
-        ]);
-
-        $composant->update($validated);
-        return $composant;
-    }
-
-    public function destroy($id)
-    {
-        $composant = Composant::findOrFail($id);
         $composant->delete();
-        return response()->json(['message' => 'Composant supprimé']);
+        return redirect()->route('composants.index')->with('success', 'Composant supprimé');
     }
 
-    public function associerKit($idComposant, $idKit, $quantite = 1)
+    public function entree(Request $request, Composant $composant)
     {
-        KitItem::create([
-            'kit_id' => $idKit,
-            'item_type' => 'Composant',
-            'item_id' => $idComposant,
-            'quantite' => $quantite
-        ]);
-
-        return response()->json(['message' => 'Composant ajouté au kit']);
+        $composant->quantite += $request->quantite;
+        $composant->save();
+        return redirect()->route('composants.index')->with('success', 'Stock mis à jour');
     }
 
-    public function suiviParProjet($idComposant)
+    public function sortie(Request $request, Composant $composant)
     {
-        $historique = ComposantProjet::where('composant_id', $idComposant)->get();
-        return response()->json($historique);
+        $composant->quantite -= $request->quantite;
+        $composant->save();
+        return redirect()->route('composants.index')->with('success', 'Stock mis à jour');
     }
 
+    public function search(Request $request)
+    {
+        $q = $request->q;
+        $list = Composant::with(['categorie', 'emplacement', 'fournisseur', 'fabricant'])
+            ->where('nom', 'like', "%$q%")
+            ->paginate(10);
+
+        return view('composants._table', compact('list'));
+    }
 }

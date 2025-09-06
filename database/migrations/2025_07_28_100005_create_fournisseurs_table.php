@@ -14,22 +14,21 @@ return new class extends Migration
         Schema::create('fournisseurs', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
-    $table->string('adresse')->nullable();
-    $table->string('ville')->nullable();
-    $table->string('etat')->nullable();
-    $table->string('pays')->nullable();
-    $table->string('fermeture_eclair')->nullable();
-    $table->string('nom_personne_ressource')->nullable();
-    $table->string('telephone')->nullable();
-    $table->string('fax')->nullable();
-    $table->string('messagerie_electronique')->nullable();
-    $table->string('url')->nullable();
-    $table->text('note')->nullable();
-    $table->string('image')->nullable();
+            $table->string('adresse')->nullable();
+            $table->string('ville')->nullable();
+            $table->string('etat')->nullable();
+            $table->string('pays')->nullable();
+            $table->string('contact')->nullable(); // Personne ressource
+            $table->string('telephone')->nullable();
+            $table->string('fax')->nullable();
+            $table->string('email')->nullable(); // Messagerie électronique
+            $table->string('site_web')->nullable(); // URL
+            $table->text('notes')->nullable(); // Note (au pluriel)
+            $table->string('image')->nullable();
             $table->timestamps();
         });
 
-        Schema::disableForeignKeyConstraints();
+       
     }
 
     /**

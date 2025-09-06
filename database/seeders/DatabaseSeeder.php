@@ -10,11 +10,11 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-    public function run(): void
+    public function run()
     {
         $this->call([
             InitialDatabaseSeeder::class,
-            // tu peux ajouter d'autres seeders ici si nécessaire
+            AdditionalMenusSeeder::class,
         ]);
     }
 }

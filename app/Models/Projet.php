@@ -9,7 +9,6 @@ class Projet extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['refprojet'];
-
+    protected $fillable = ['refprojet', 'statut'];
     public function actifs() { return $this->hasMany(Actif::class); }
 }

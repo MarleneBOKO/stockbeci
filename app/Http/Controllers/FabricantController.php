@@ -9,40 +9,64 @@ class FabricantController extends Controller
 {
     public function index()
     {
-        return Fabricant::all();
+        $list = Fabricant::latest()->paginate(10);
+        return view('fabricants.index', compact('list'));
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nom' => 'required|string',
-            'contact' => 'nullable|string',
+        $data = $request->validate([
+            'nom' => 'required|string|max:255',
+            'url' => 'nullable|url',
+            'url_assistance' => 'nullable|url',
+            'url_search_garantie' => 'nullable|url',
+            'tel_assistance' => 'nullable|string',
+            'email_assistance' => 'nullable|email',
+            'notes' => 'nullable|string',
+            'image' => 'nullable|image|max:2048'
         ]);
 
-        return Fabricant::create($validated);
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('fabricants', 'public');
+        }
+
+        Fabricant::create($data);
+
+        return back()->with('success', 'Fabricant ajouté avec succès.');
     }
 
-    public function show($id)
+    public function update(Request $request, Fabricant $fabricant)
     {
-        return Fabricant::findOrFail($id);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $fabricant = Fabricant::findOrFail($id);
-        $validated = $request->validate([
-            'nom' => 'required|string',
-            'contact' => 'nullable|string',
+        $data = $request->validate([
+            'nom' => 'required|string|max:255',
+            'url' => 'nullable|url',
+            'url_assistance' => 'nullable|url',
+            'url_search_garantie' => 'nullable|url',
+            'tel_assistance' => 'nullable|string',
+            'email_assistance' => 'nullable|email',
+            'notes' => 'nullable|string',
+            'image' => 'nullable|image|max:2048'
         ]);
 
-        $fabricant->update($validated);
-        return $fabricant;
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('fabricants', 'public');
+        }
+
+        $fabricant->update($data);
+
+        return back()->with('success', 'Fabricant modifié avec succès.');
     }
 
-    public function destroy($id)
+    public function destroy(Fabricant $fabricant)
     {
-        $fabricant = Fabricant::findOrFail($id);
         $fabricant->delete();
-        return response()->json(['message' => 'Fabricant supprimé']);
+        return back()->with('success', 'Fabricant supprimé.');
+    }
+
+    public function search(Request $request)
+    {
+        $q = $request->get('q');
+        $list = Fabricant::where('nom', 'like', "%$q%")->paginate(10);
+        return view('fabricants._table', compact('list'))->render();
     }
 }

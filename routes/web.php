@@ -114,19 +114,6 @@ Route::middleware([App\Http\Middleware\AuthECOM::class])->group(function () {
 
 
 
-    Route::get('/composants', [ComposantController::class, 'index'])->name('composants');
-    Route::get('/consommables', [ConsommableController::class, 'index'])->name('consommables');
-    Route::get('/categories', [CategorieController::class, 'index'])->name('categories');
-    Route::get('/emplacements', [EmplacementController::class, 'index'])->name('emplacements');
-    Route::get('/fournisseurs', [FournisseurController::class, 'index'])->name('fournisseurs');
-    Route::get('/fabricants', [FabricantController::class, 'index'])->name('fabricants');
-    Route::get('/projets', [ProjetController::class, 'index'])->name('projets');
-    Route::get('/modeles', [ModelController::class, 'index'])->name('modeles');
-    Route::get('/etats', [EtatController::class, 'index'])->name('etats');
-    Route::get('/utilisateurs', [UtilisateurController::class, 'index'])->name('utilisateurs');
-    Route::get('/accessoires', [AccessoireController::class, 'index'])->name('accessoires');
-    Route::get('/kits', [KitController::class, 'index'])->name('kits');
-
 
 
 
@@ -171,7 +158,7 @@ Route::middleware([App\Http\Middleware\AuthECOM::class])->group(function () {
 
 
     Route::prefix('categories')->group(function () {
-        Route::get('/', [CategorieController::class, 'index'])->name('categories.index'); // Liste
+        Route::get('/', [CategorieController::class, 'index'])->name('categories'); // Liste
         Route::get('/create', [CategorieController::class, 'create'])->name('categories.create'); // Formulaire création
         Route::post('/', [CategorieController::class, 'store'])->name('categories.store'); // Enregistrer
         Route::get('/{categorie}/edit', [CategorieController::class, 'edit'])->name('categories.edit'); // Formulaire édition
@@ -187,12 +174,61 @@ Route::middleware([App\Http\Middleware\AuthECOM::class])->group(function () {
 
 
 Route::prefix('kits')->group(function () {
-    Route::get('/', [KitController::class, 'index'])->name('kits.index'); // Liste
+    Route::get('/', [KitController::class, 'index'])->name('kits'); // Liste
     Route::get('/create', [KitController::class, 'create'])->name('kits.create'); // Formulaire création
     Route::post('/', [KitController::class, 'store'])->name('kits.store'); // Enregistrer
     Route::get('/{kit}/edit', [KitController::class, 'edit'])->name('kits.edit'); // Formulaire édition
     Route::put('/{kit}', [KitController::class, 'update'])->name('kits.update'); // Mettre à jour
     Route::delete('/{kit}', [KitController::class, 'destroy'])->name('kits.destroy'); // Supprimer
 });
+
+    Route::prefix('consommables')->group(function () {
+        Route::get('/', [ConsommableController::class, 'index'])->name('consommables');
+        Route::get('/search', [ConsommableController::class, 'search'])->name('consommables.search');
+        Route::post('/', [ConsommableController::class, 'store'])->name('consommables.store');
+        Route::put('/{id}', [ConsommableController::class, 'update'])->name('consommables.update');
+        Route::delete('/{id}', [ConsommableController::class, 'destroy'])->name('consommables.destroy');
+        Route::post('/{id}/entree', [ConsommableController::class, 'entreeStock'])->name('consommables.entree');
+        Route::post('/{id}/sortie', [ConsommableController::class, 'sortieStock'])->name('consommables.sortie');
+    });
+
+
+
+Route::prefix('composants')->group(function () {
+    Route::get('/', [ComposantController::class, 'index'])->name('composants');
+    Route::get('/create', [ComposantController::class, 'create'])->name('composants.create');
+    Route::post('/', [ComposantController::class, 'store'])->name('composants.store');
+    Route::get('/{composant}/edit', [ComposantController::class, 'edit'])->name('composants.edit');
+    Route::put('/{composant}', [ComposantController::class, 'update'])->name('composants.update');
+    Route::delete('/{composant}', [ComposantController::class, 'destroy'])->name('composants.destroy');
+
+    // Entrée / sortie stock
+    Route::post('/{composant}/entree', [ComposantController::class, 'entree'])->name('composants.entree');
+    Route::post('/{composant}/sortie', [ComposantController::class, 'sortie'])->name('composants.sortie');
+
+    // Recherche AJAX
+    Route::get('/search', [ComposantController::class, 'search'])->name('composants.search');
+});
+
+
+
+
+Route::prefix('fournisseurs')->group(function () {
+    Route::get('/', [FournisseurController::class, 'index'])->name('fournisseurs');
+    Route::post('/', [FournisseurController::class, 'store'])->name('fournisseurs.store');
+    Route::put('/{fournisseur}', [FournisseurController::class, 'update'])->name('fournisseurs.update');
+    Route::delete('/{fournisseur}', [FournisseurController::class, 'destroy'])->name('fournisseurs.destroy');
+    Route::get('/search', [FournisseurController::class, 'search'])->name('fournisseurs.search');
+});
+
+Route::prefix('fabricants')->group(function () {
+    Route::get('/', [FabricantController::class, 'index'])->name('fabricants');
+    Route::post('/', [FabricantController::class, 'store'])->name('fabricants.store');
+    Route::put('/{fabricant}', [FabricantController::class, 'update'])->name('fabricants.update');
+    Route::delete('/{fabricant}', [FabricantController::class, 'destroy'])->name('fabricants.destroy');
+    Route::get('/search', [FabricantController::class, 'search'])->name('fabricants.search');
+});
+
+
 
 });

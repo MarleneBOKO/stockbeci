@@ -4,102 +4,122 @@ namespace App\Http\Controllers;
 
 use App\Models\Consommable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ConsommableController extends Controller
 {
-    public function index()
+    // Liste des consommables
+    public function index(Request $request)
     {
-        return Consommable::with(['categorie', 'emplacement', 'fournisseur', 'fabricant'])->get();
+        $list = Consommable::with('item')
+            ->orderBy('nom')
+            ->paginate(10);
+
+        if ($request->ajax()) {
+            return view('consommables._table', compact('list'))->render();
+        }
+
+        return view('consommables.index', compact('list'));
     }
 
+    // Recherche AJAX
+    public function search(Request $request)
+    {
+        $q = $request->get('q', '');
+        $list = Consommable::with('item')
+            ->where('nom', 'like', "%$q%")
+            ->orWhereHas('item', function ($query) use ($q) {
+                $query->where('nom', 'like', "%$q%");
+            })
+            ->orderBy('nom')
+            ->paginate(10);
+
+        return view('consommables._table', compact('list'))->render();
+    }
+
+    // Ajouter un consommable
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nom' => 'required|string',
-            'categorie_id' => 'required|exists:categories,id',
-            'numero_model' => 'nullable|string',
-            'numero_article' => 'nullable|string',
-            'qte_min' => 'nullable|integer',
-            'emplacement_id' => 'required|exists:emplacements,id',
-            'num_commande' => 'nullable|string',
-            'date_achat' => 'nullable|date',
-            'cout_achat' => 'nullable|numeric',
-            'fournisseur_id' => 'nullable|exists:fournisseurs,id',
-            'fabricant_id' => 'nullable|exists:fabricants,id',
-            'quantite' => 'integer',
-            'notes' => 'nullable|string',
-            'images' => 'nullable|string',
+        $request->validate([
+            'nom' => 'required|string|max:255',
+            'quantite' => 'required|integer|min:0',
+            'qte_min' => 'nullable|integer|min:0',
+            'item_type' => 'nullable|string',
+            'item_id' => 'nullable|integer',
         ]);
 
-        return Consommable::create($validated);
+        Consommable::create($request->all());
+
+        flash("Consommable ajouté avec succès.")->success();
+        return back();
     }
 
-    public function show($id)
-    {
-        return Consommable::with(['categorie', 'emplacement', 'fournisseur', 'fabricant'])->findOrFail($id);
-    }
-
+    // Modifier un consommable
     public function update(Request $request, $id)
     {
         $consommable = Consommable::findOrFail($id);
-        $validated = $request->validate([
-            'nom' => 'required|string',
-            'categorie_id' => 'required|exists:categories,id',
-            'numero_model' => 'nullable|string',
-            'numero_article' => 'nullable|string',
-            'qte_min' => 'nullable|integer',
-            'emplacement_id' => 'required|exists:emplacements,id',
-            'num_commande' => 'nullable|string',
-            'date_achat' => 'nullable|date',
-            'cout_achat' => 'nullable|numeric',
-            'fournisseur_id' => 'nullable|exists:fournisseurs,id',
-            'fabricant_id' => 'nullable|exists:fabricants,id',
-            'quantite' => 'integer',
-            'notes' => 'nullable|string',
-            'images' => 'nullable|string',
+
+        $request->validate([
+            'nom' => 'required|string|max:255',
+            'quantite' => 'required|integer|min:0',
+            'qte_min' => 'nullable|integer|min:0',
+            'item_type' => 'nullable|string',
+            'item_id' => 'nullable|integer',
         ]);
 
-        $consommable->update($validated);
-        return $consommable;
+        $consommable->update($request->all());
+
+        flash("Consommable mis à jour avec succès.")->success();
+        return back();
     }
 
+    // Supprimer
     public function destroy($id)
     {
-        $consommable = Consommable::findOrFail($id);
-        $consommable->delete();
-        return response()->json(['message' => 'Consommable supprimé']);
+        Consommable::findOrFail($id)->delete();
+
+        flash("Consommable supprimé.")->success();
+        return back();
     }
 
-    public function sortieProjet($idConsommable, $quantite, $idProjet)
+    // Entrée de stock
+    public function entreeStock(Request $request, $id)
     {
-        $consommable = Consommable::findOrFail($idConsommable);
-
-        if ($consommable->quantite < $quantite) {
-            return response()->json(['message' => 'Quantité insuffisante'], 400);
-        }
-
-        $consommable->quantite -= $quantite;
-        $consommable->save();
-
-        // Historique sortie
-        ConsommableProjet::create([
-            'consommable_id' => $idConsommable,
-            'projet_id' => $idProjet,
-            'quantite' => $quantite
+        $request->validate([
+            'quantite' => 'required|integer|min:1',
         ]);
 
-        return response()->json(['message' => 'Sortie de consommable enregistrée']);
+        $consommable = Consommable::findOrFail($id);
+        $consommable->increment('quantite', $request->quantite);
+
+        flash("Stock augmenté de {$request->quantite} unités.")->success();
+        return back();
     }
 
-    public function alerteSeuil($idConsommable)
+    // Sortie de stock (par projet)
+    public function sortieStock(Request $request, $id)
     {
-        $consommable = Consommable::findOrFail($idConsommable);
-        if ($consommable->quantite <= $consommable->qte_min) {
-            // Notification ici (email ou app)
-            return response()->json(['alerte' => true, 'message' => 'Quantité en dessous du seuil']);
+        $request->validate([
+            'quantite' => 'required|integer|min:1',
+            'projet' => 'nullable|string|max:255'
+        ]);
+
+        $consommable = Consommable::findOrFail($id);
+
+        if ($consommable->quantite < $request->quantite) {
+            flash("Stock insuffisant pour cette sortie.")->error();
+            return back();
         }
 
-        return response()->json(['alerte' => false]);
-    }
+        $consommable->decrement('quantite', $request->quantite);
 
+        // Vérification du seuil
+        if ($consommable->qte_min && $consommable->quantite <= $consommable->qte_min) {
+            flash("⚠ Le stock du consommable '{$consommable->nom}' est sous le seuil minimal !")->warning();
+        } else {
+            flash("Stock réduit de {$request->quantite} unités.")->success();
+        }
+
+        return back();
+    }
 }

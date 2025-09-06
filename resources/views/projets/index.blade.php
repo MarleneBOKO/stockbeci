@@ -52,10 +52,12 @@
                                             <td>{{ $projet->refprojet }}</td>
                                             <td>{{ $projet->created_at->format('d/m/Y') }}</td>
                                             <td>
-                                                @if($projet->statut == 1)
-                                                    <span class="badge badge-success">Actif</span>
+                                                @if($projet->statut == 'en_cours')
+                                                    <span class="badge badge-success">En cours</span>
+                                                @elseif($projet->statut == 'termine')
+                                                    <span class="badge badge-primary">Terminé</span>
                                                 @else
-                                                    <span class="badge badge-danger">Inactif</span>
+                                                    <span class="badge badge-danger">Annulé</span>
                                                 @endif
                                             </td>
                                             <td>
@@ -107,6 +109,14 @@
                                                                 <input type="text" name="refprojet" class="form-control"
                                                                     value="{{ $projet->refprojet }}" required>
                                                             </div>
+                                                            <div class="form-group">
+                                                                <label>Statut</label>
+                                                                <select name="statut" class="form-control" required>
+                                                                    <option value="en_cours" {{ $projet->statut == 'en_cours' ? 'selected' : '' }}>En cours</option>
+                                                                    <option value="termine" {{ $projet->statut == 'termine' ? 'selected' : '' }}>Terminé</option>
+                                                                    <option value="annule" {{ $projet->statut == 'annule' ? 'selected' : '' }}>Annulé</option>
+                                                                </select>
+                                                            </div>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-default"
@@ -148,15 +158,24 @@
                             <label>Réf Projet</label>
                             <input type="text" name="refprojet" class="form-control" required>
                         </div>
+                        <div class="form-group">
+                            <label>Statut</label>
+                            <select name="statut" class="form-control" required>
+                                <option value="en_cours">En cours</option>
+                                <option value="termine">Terminé</option>
+                                <option value="annule">Annulé</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
                         <button type="submit" class="btn btn-primary">Ajouter</button>
                     </div>
                 </form>
+            </div
+
             </div>
         </div>
-    </div>
 @endsection
 
 @section("js")
