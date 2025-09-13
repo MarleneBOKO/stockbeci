@@ -10,9 +10,10 @@ class KitController extends Controller
 {
     public function index()
     {
-        $kits = Kit::with('items')->get();
+        $kits = Kit::with('items')->paginate(10);
         return view('kits.index', compact('kits'));
     }
+
 
     public function create()
     {

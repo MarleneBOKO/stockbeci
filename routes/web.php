@@ -158,7 +158,7 @@ Route::middleware([App\Http\Middleware\AuthECOM::class])->group(function () {
 
 
     Route::prefix('categories')->group(function () {
-        Route::get('/', [CategorieController::class, 'index'])->name('categories'); // Liste
+        Route::get('/', [CategorieController::class, 'index'])->name('categories.index'); // Liste
         Route::get('/create', [CategorieController::class, 'create'])->name('categories.create'); // Formulaire création
         Route::post('/', [CategorieController::class, 'store'])->name('categories.store'); // Enregistrer
         Route::get('/{categorie}/edit', [CategorieController::class, 'edit'])->name('categories.edit'); // Formulaire édition

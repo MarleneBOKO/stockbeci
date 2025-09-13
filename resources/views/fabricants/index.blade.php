@@ -54,13 +54,10 @@
                                 </thead>
                                 <tbody>
                                     @forelse($list as $fabricant)
-
                                         <tr>
                                             <td>{{ $fabricant->nom }}</td>
-                                            <td><a href="{{ $fabricant->url }}" target="_blank">{{ $fabricant->url ?? '-' }}</a>
-                                            </td>
-                                            <td><a href="{{ $fabricant->url_assistance }}"
-                                                    target="_blank">{{ $fabricant->url_assistance ?? '-' }}</a></td>
+                                            <td><a href="{{ $fabricant->url }}" target="_blank">{{ $fabricant->url ?? '-' }}</a></td>
+                                            <td><a href="{{ $fabricant->url_assistance }}" target="_blank">{{ $fabricant->url_assistance ?? '-' }}</a></td>
                                             <td>{{ $fabricant->email_assistance ?? '-' }}</td>
                                             <td>{{ $fabricant->tel_assistance ?? '-' }}</td>
                                             <td>{{ Str::limit($fabricant->notes, 30) }}</td>
@@ -87,29 +84,50 @@
                                         </tr>
 
                                         {{-- Modal Édition --}}
-                                        <div class="modal fade" id="editFabricant{{ $fabricant->id }}" tabindex="-1"
-                                            role="dialog">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <form class="form-horizontal" method="POST"
-                                                        action="{{ route('fabricants.update', $fabricant->id) }}">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <div class="modal-header">
-                                                            <h4 class="modal-title">Modifier Fabricant</h4>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            @include('fabricants.partials.form', ['fabricant' => $fabricant])
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-default"
-                                                                data-dismiss="modal">FERMER</button>
-                                                            <button type="submit" class="btn btn-primary">MODIFIER</button>
-                                                        </div>
-                                                    </form>
+                                            <div class="modal fade" id="editFabricant{{ $fabricant->id }}" tabindex="-1" role="dialog">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <form class="form-horizontal" method="POST"
+                                                            action="{{ route('fabricants.update', $fabricant->id) }}">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <div class="modal-header">
+                                                                <h4 class="modal-title">Modifier Fabricant</h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                            {{-- resources/views/fabricants/partials/form.blade.php --}}
+
+                                                            <div class="form-group">
+                                                                <label for="nom">Nom</label>
+                                                                <input type="text" name="nom" id="nom" class="form-control" value="{{ old('nom', $fabricant->nom ?? '') }}"
+                                                                    required>
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label for="url">URL</label>
+                                                                <input type="url" name="url" id="url" class="form-control" value="{{ old('url', $fabricant->url ?? '') }}">
+                                                            </div>
+
+                                                            {{-- Ajoutez ici les autres champs de votre formulaire de fabricant --}}
+
+                                                            <div class="form-group">
+                                                                <label for="image">Image</label>
+                                                                <input type="file" name="image" id="image" class="form-control-file">
+                                                                @if(!empty($fabricant->image))
+                                                                    <img src="{{ asset('storage/' . $fabricant->image) }}" alt="Image fabricant"
+                                                                        style="max-height: 100px; margin-top: 10px;">
+                                                                @endif
+                                                            </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-default"
+                                                                    data-dismiss="modal">FERMER</button>
+                                                                <button type="submit" class="btn btn-primary">MODIFIER</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
                                     @empty
                                         <tr>
                                             <td colspan="7">
@@ -133,42 +151,33 @@
         $('#flash-overlay-modal').modal();
         $('div.alert').not('.alert-important').delay(6000).fadeOut(350);
 
-        // Recherche AJAX
+        // Recherche AJAX - Corrigé
         document.getElementById("search").addEventListener("keyup", function () {
             let search = this.value;
-            fetch(`{{ route('fabricants') }}?search=${search}`)
+            fetch(`{{ route('fabricants.search') }}?q=${search}`)
                 .then(res => res.text())
-                .then(html => document.getElementById("data").innerHTML = html);
+                .then(html => document.getElementById("data").innerHTML = html)
+                .catch(err => console.error('Erreur de recherche:', err));
         });
     </script>
 @endsection
 
 @section("model")
-        {{-- Modal Ajout Fabricant --}}
-        <div class="modal fade" id="addFabricant" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <form class="form-horizontal" method="post" action="{{ route('fabricants.store') }}"
-                        enctype="multipart/form-data">
-                        @csrf
-                        <div class="modal-header">
-                            <h4 class="modal-title">Ajouter un Fabricant</h4>
-                        </div>
-                        <div class="modal-body">
-    {{-- Modal Ajout Fabricant --}}
+    {{-- Modal Ajout Fabricant - CORRIGÉ --}}
     <div class="modal fade" id="addFabricant" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form class="form-horizontal" method="POST" action="{{ route('fabricants.store') }}"
-                    enctype="multipart/form-data">
+                <form method="POST" action="{{ route('fabricants.store') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-header">
                         <h4 class="modal-title">Ajouter un Fabricant</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                     <div class="modal-body">
-
                         <div class="form-group">
-                            <label for="nom">Nom <span class="text-danger">*</span></label>
+                            <label for="nom">Nom *</label>
                             <input type="text" name="nom" id="nom" class="form-control" required>
                         </div>
 
@@ -199,23 +208,20 @@
 
                         <div class="form-group">
                             <label for="notes">Notes</label>
-                            <textarea name="notes" id="notes" class="form-control" rows="3"></textarea>
+                            <textarea name="notes" id="notes" class="form-control"></textarea>
                         </div>
 
                         <div class="form-group">
                             <label for="image">Logo / Image</label>
                             <input type="file" name="image" id="image" class="form-control-file">
                         </div>
-
                     </div>
-                    
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">FERMER</button>
-                            <button type="submit" class="btn btn-primary">AJOUTER</button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">FERMER</button>
+                        <button type="submit" class="btn btn-primary">ENREGISTRER</button>
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
 @endsection
