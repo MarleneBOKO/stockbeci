@@ -9,7 +9,8 @@ class CategorieController extends Controller
 {
     public function index()
     {
-        return Categorie::all();
+        $categories = Categorie::paginate(10); // Pagination pour gérer l'affichage
+        return view('categories.index', compact('categories'));
     }
 
     public function store(Request $request)

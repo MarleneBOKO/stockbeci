@@ -13,13 +13,16 @@ class ComposantController extends Controller
 {
     public function index()
     {
-        $list = Composant::with(['categorie', 'emplacement', 'fournisseur', 'fabricant'])->paginate(10);
+        $composants = Composant::with(['categorie', 'emplacement', 'fournisseur', 'fabricant'])->paginate(10);
         $categories = Categorie::all();
         $emplacements = Emplacement::all();
         $fournisseurs = Fournisseur::all();
         $fabricants = Fabricant::all();
+
+        $list = Composant::with(['categorie', 'emplacement', 'fournisseur', 'fabricant'])->paginate(10);
         return view('composants.index', compact('list', 'categories', 'emplacements', 'fournisseurs', 'fabricants'));
     }
+
 
     public function store(Request $request)
     {

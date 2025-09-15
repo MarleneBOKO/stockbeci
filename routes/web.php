@@ -180,10 +180,11 @@ Route::prefix('kits')->group(function () {
     Route::get('/{kit}/edit', [KitController::class, 'edit'])->name('kits.edit'); // Formulaire édition
     Route::put('/{kit}', [KitController::class, 'update'])->name('kits.update'); // Mettre à jour
     Route::delete('/{kit}', [KitController::class, 'destroy'])->name('kits.destroy'); // Supprimer
+        Route::get('/kits/search', [KitController::class, 'search'])->name('kits.search');
 });
 
     Route::prefix('consommables')->group(function () {
-        Route::get('/', [ConsommableController::class, 'index'])->name('consommables');
+        Route::get('/', [ConsommableController::class, 'index'])->name('consommables.index');
         Route::get('/search', [ConsommableController::class, 'search'])->name('consommables.search');
         Route::post('/', [ConsommableController::class, 'store'])->name('consommables.store');
         Route::put('/{id}', [ConsommableController::class, 'update'])->name('consommables.update');
@@ -195,7 +196,7 @@ Route::prefix('kits')->group(function () {
 
 
 Route::prefix('composants')->group(function () {
-    Route::get('/', [ComposantController::class, 'index'])->name('composants');
+    Route::get('/', [ComposantController::class, 'index'])->name('composants.index');
     Route::get('/create', [ComposantController::class, 'create'])->name('composants.create');
     Route::post('/', [ComposantController::class, 'store'])->name('composants.store');
     Route::get('/{composant}/edit', [ComposantController::class, 'edit'])->name('composants.edit');

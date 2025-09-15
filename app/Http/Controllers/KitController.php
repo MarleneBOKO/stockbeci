@@ -76,4 +76,13 @@ class KitController extends Controller
         $kit->delete();
         return redirect()->route('kits.index')->with('success', 'Kit supprimé avec succès.');
     }
+    public function search(Request $request)
+    {
+        $query = $request->input('q');
+        $kits = Kit::with('items')
+            ->where('nom', 'like', "%{$query}%")
+            ->paginate(10);
+        // Retourner une vue partielle avec uniquement la table (correspondant à #data)
+        return view('kits.partials.kit_table', compact('kits'))->render();
+    }
 }

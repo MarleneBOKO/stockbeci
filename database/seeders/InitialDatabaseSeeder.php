@@ -71,8 +71,8 @@ class InitialDatabaseSeeder extends Seeder
 
             // Nouveaux menus avec IDs supérieurs
             ['idMenu' => 31, 'libelleMenu' => 'Actifs', 'titre_page' => 'Gestion Actifs', 'route' => 'actifs', 'Topmenu_id' => 0, 'user_action' => 1, 'num_ordre' => 10, 'iconee' => 'menu-icon mdi mdi-package-variant-closed', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
-            ['idMenu' => 32, 'libelleMenu' => 'Consommables', 'titre_page' => 'Gestion Consommables', 'route' => 'consommables', 'Topmenu_id' => 0, 'user_action' => 1, 'num_ordre' => 11, 'iconee' => 'menu-icon mdi mdi-cube-outline', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
-            ['idMenu' => 33, 'libelleMenu' => 'Composants', 'titre_page' => 'Gestion Composants', 'route' => 'composants', 'Topmenu_id' => 0, 'user_action' => 1, 'num_ordre' => 12, 'iconee' => 'menu-icon mdi mdi-cog-box', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+            ['idMenu' => 32, 'libelleMenu' => 'Consommables', 'titre_page' => 'Gestion Consommables', 'route' => 'consommables.index', 'Topmenu_id' => 0, 'user_action' => 1, 'num_ordre' => 11, 'iconee' => 'menu-icon mdi mdi-cube-outline', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+            ['idMenu' => 33, 'libelleMenu' => 'Composants', 'titre_page' => 'Gestion Composants', 'route' => 'composants.index', 'Topmenu_id' => 0, 'user_action' => 1, 'num_ordre' => 12, 'iconee' => 'menu-icon mdi mdi-cog-box', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
             ['idMenu' => 34, 'libelleMenu' => 'Accessoires', 'titre_page' => 'Gestion Accessoires', 'route' => 'accessoires', 'Topmenu_id' => 0, 'user_action' => 1, 'num_ordre' => 13, 'iconee' => 'menu-icon mdi mdi-puzzle', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
             ['idMenu' => 35, 'libelleMenu' => 'Kits', 'titre_page' => 'Gestion Kits', 'route' => 'kits', 'Topmenu_id' => 0, 'user_action' => 1, 'num_ordre' => 14, 'iconee' => 'menu-icon mdi mdi-package', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
         ]);
