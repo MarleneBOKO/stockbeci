@@ -4,13 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\ModelMateriel;
 use Illuminate\Http\Request;
+use App\Models\Categorie;
+use App\Models\Fabricant;
 
 class ModelController extends Controller
 {
     public function index(Request $request)
     {
         $query = ModelMateriel::with(['categorie', 'fabricant']);
-
+        // On récupère toutes les catégories et fabricants pour les <select>
+        $categories = Categorie::all();
+        $fabricants = Fabricant::all();
         if ($request->has('q')) {
             $search = $request->q;
             $query->where('nom', 'like', "%{$search}%");
@@ -18,7 +22,7 @@ class ModelController extends Controller
 
         $models = $query->paginate(10); // Pagination avec 10 éléments par page
 
-        return view('models.index', ['modeles' => $models]);
+        return view('models.index', compact('models', 'categories', 'fabricants'));
     }
 
 
@@ -36,7 +40,9 @@ class ModelController extends Controller
             'images' => 'nullable|string',
         ]);
 
-        return ModelMateriel::create($validated);
+        ModelMateriel::create($validated);
+        return redirect()->back()->with('success', 'Model créé avec succès.');
+
     }
 
     public function show($id)

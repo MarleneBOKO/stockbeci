@@ -36,7 +36,10 @@ class EmplacementController extends Controller
             'pays' => 'required|string',
         ]);
 
-        return Emplacement::create($validated);
+     Emplacement::create($validated);
+
+        return redirect()->back()->with('success', 'Emplacement créé avec succès.');
+
     }
 
     public function show($id)

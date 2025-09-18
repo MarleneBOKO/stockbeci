@@ -124,32 +124,37 @@
 
 @section("model")
     {{-- Modal ajout --}}
-    <div class="modal fade" id="addEmplacement" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form method="POST" action="{{ route('emplacements.store') }}">
-                    @csrf
-                    <div class="modal-header">
-                        <h4 class="modal-title">Ajouter un Emplacement</h4>
+   <div class="modal fade" id="addEmplacement" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{{ route('emplacements.store') }}">
+                @csrf
+                <div class="modal-header">
+                    <h4 class="modal-title">Ajouter un Emplacement</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nom</label>
+                        <input type="text" name="nom" class="form-control" required>
                     </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label>Nom</label>
-                            <input type="text" name="nom" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea name="description" class="form-control"></textarea>
-                        </div>
+                    <div class="form-group">
+                        <label>Ville</label>
+                        <input type="text" name="ville" class="form-control" required>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
-                        <button type="submit" class="btn btn-primary">Ajouter</button>
+                    <div class="form-group">
+                        <label>Pays</label>
+                        <input type="text" name="pays" class="form-control" required>
                     </div>
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
+
 @endsection
 
 @section("js")
