@@ -18,6 +18,5 @@ class ModelMateriel extends Model
 
     public function categorie() { return $this->belongsTo(Categorie::class); }
     public function fabricant() { return $this->belongsTo(Fabricant::class); }
-    public function amortissement() { return $this->belongsTo(Amortissement::class); }
     public function actifs() { return $this->hasMany(Actif::class); }
 }

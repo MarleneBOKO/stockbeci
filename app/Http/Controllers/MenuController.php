@@ -13,9 +13,9 @@ use App\Models\Trace;
 class MenuController extends Controller
 {
     //
-    public function getmenu() 
-    { 
-        
+    public function getmenu()
+    {
+
             $list = DB::table('menus');
             $search = "";
             if(request('rec') == 1){
@@ -31,7 +31,7 @@ class MenuController extends Controller
             }
 
             $list = $list->paginate(20);
-            return view('menu.listmenu', compact('list', 'search'));
+        return view('menu.listmenu', compact('list', 'search'));
 
     }
 
@@ -142,7 +142,7 @@ class MenuController extends Controller
                 'titre' => 'required|string',
                 'parent' => 'required|integer',
                 'rout' => 'required|string',
-                
+
                 'pos' => 'required|integer',
             ]);
 

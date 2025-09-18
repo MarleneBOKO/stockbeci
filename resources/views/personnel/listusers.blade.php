@@ -2,12 +2,12 @@
 
 @section('content')
 
-	<div class="col-lg-12 col-md-12 col-xs-12"> 
- 
+	<div class="col-lg-12 col-md-12 col-xs-12">
+
 		<div class="box-content bordered info js__card">
-			
-			<h4 class="box-title with-control"> 
-				Liste des utilisateurs NSIA : 
+
+			<h4 class="box-title with-control">
+				Liste des utilisateurs  :
 			<span class="controls">
 	     		<button type="button" class="control fa fa-minus js__card_minus"></button>
 			</span>
@@ -28,11 +28,11 @@
 							</div>
 						</div>
 					</form>
-					<script>		
-						
+					<script>
+
 						function getXMLHttpRequest() {
 							var xhr = null;
-							
+
 							if (window.XMLHttpRequest || window.ActiveXObject) {
 								if (window.ActiveXObject) {
 									try {
@@ -41,26 +41,26 @@
 										xhr = new ActiveXObject("Microsoft.XMLHTTP");
 									}
 								} else {
-									xhr = new XMLHttpRequest(); 
+									xhr = new XMLHttpRequest();
 								}
 							} else {
 								alert("Votre navigateur ne supporte pas l'objet XMLHTTPRequest...");
 								return null;
 							}
-							
+
 							return xhr;
 						}
 						function readData(sData) {
 							//alert(sData);
 							var oSelect = document.getElementById("data");
-							
+
 							oSelect.innerHTML = sData;
 						}
-						
+
 						var y = document.getElementById("recherche");
 						y.addEventListener("blur", function () {
 						  search = document.getElementById("search").value;
-						  var xhr = getXMLHttpRequest(); 
+						  var xhr = getXMLHttpRequest();
 							xhr.open("GET", "{{route('listU')}}?check="+search+"&rec=1", true);
 							xhr.send(null);
 							xhr.onreadystatechange = function() {
@@ -73,7 +73,7 @@
 						var y = document.getElementById("recherche");
 						y.addEventListener("keydown", function () {
 						  search = document.getElementById("search").value;
-						  var xhr = getXMLHttpRequest(); 
+						  var xhr = getXMLHttpRequest();
 							xhr.open("GET", "{{route('listU')}}?check="+search+"&rec=1", true);
 							xhr.send(null);
 							xhr.onreadystatechange = function() {
@@ -86,7 +86,7 @@
 						var y = document.getElementById("recherche");
 						y.addEventListener("keyup", function () {
 						  search = document.getElementById("search").value;
-						  var xhr = getXMLHttpRequest(); 
+						  var xhr = getXMLHttpRequest();
 							xhr.open("GET", "{{route('listU')}}?check="+search+"&rec=1", true);
 							xhr.send(null);
 							xhr.onreadystatechange = function() {
@@ -95,9 +95,9 @@
 							    }
 							};
 						}, true);
-						
+
 					</script>
-					
+
                     <!------------------------------------------->
 			<div class="col-xs-12">
 				<div class="box-content" id="data">
@@ -126,8 +126,8 @@
 									<td>
                                     @if(in_array("update_user", session("auto_action")))
 									<button type="button" title="Modifier"  class="btn btn-primary btn-circle btn-xs  margin-bottom-10 waves-effect waves-light">
-										<a href="/modif-users-{{$user->idUser}}" style="color:white;"> <i class="ico fa fa-edit"></i></a> 
-										
+										<a href="/modif-users-{{$user->idUser}}" style="color:white;"> <i class="ico fa fa-edit"></i></a>
+
 									</button>
 									@endif
 
@@ -147,7 +147,7 @@
 									<button type="button" title="Activé ?"  class="btn btn-primary btn-circle btn-xs  margin-bottom-10 waves-effect waves-light" style="background-color:grey"><a href="/activé-users-{{$user->idUser}}" style="color:white;"> <i class="fa fa-toggle-off" aria-hidden="true"></i></a></button>
 									@endif
 									@endif
-									
+
 									</td>
 								</tr>
 								@empty
@@ -159,7 +159,7 @@
 						</table>
 						{{$list->links()}}
 
-					</div> 
+					</div>
 				</div>
 				<!-- /.box-content -->
 			</div>
@@ -257,7 +257,7 @@
 											@endif
 										@endforeach
 
-									</select> 
+									</select>
 								</div>
 							</div>
 							<div class="form-group">
@@ -303,19 +303,19 @@
 								<div class="col-sm-4">
 									<input type="text" class="form-control" id="inp-type-1"  name="nom" required>
 								</div>
-							
+
 								<label for="inp-type-1" class="col-sm-2 control-label">Prénom </label>
 								<div class="col-sm-4">
 									<input type="text" class="form-control" id="inp-type-1" name="prenom" >
 								</div>
 							</div>
-							
+
 							<div class="form-group">
 								<label for="inp-type-1" class="col-sm-2 control-label">Téléphone </label>
 								<div class="col-sm-4">
 									<input type="text" class="form-control" id="inp-type-1" name="tel">
 								</div>
-	
+
 								<label for="inp-type-1" class="col-sm-2 control-label">Adresse </label>
 								<div class="col-sm-4">
 									<input type="text" class="form-control" id="inp-type-1" name="adress">
@@ -326,19 +326,19 @@
 								<div class="col-sm-10">
 									<select type="text" class="form-control" id="inp-type-1" name="sexe" >
 										<option value="F">Féminin</option>
-										<option value="M">Masculin</option>	
+										<option value="M">Masculin</option>
 									</select>
 								</div>
 							</div>
-							
+
 							<div class="form-group">
 								<label for="inp-type-4" class="col-sm-2 control-label">Rôle </label>
 								<div class="col-sm-10">
 									<select type="text" class="form-control" id="inp-type-4" name="role">
-										@foreach($allRole as $role)	
+										@foreach($allRole as $role)
 												<option value="{{ $role->idRole }}">{{ $role->libelle }}</option>
 										@endforeach
-									</select> 
+									</select>
 								</div>
 							</div>
 							<div class="form-group">
@@ -348,7 +348,7 @@
 									<select type="text" class="form-control" id="inp-type-4" name="auth">
 										<option value="direct">Authentification direct</option>
 										<option value="sys">Authentification système</option>
-									</select> 
+									</select>
 								</div>
 							</div>
 							<div class="form-group">

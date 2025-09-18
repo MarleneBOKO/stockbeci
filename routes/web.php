@@ -24,6 +24,7 @@ use App\Http\Controllers\AccessoireController;
 use App\Http\Controllers\KitController;
 
 
+
 /*
 |--------------------------------------------------------------------------
 | Authentification
@@ -126,7 +127,7 @@ Route::middleware([App\Http\Middleware\AuthECOM::class])->group(function () {
         Route::delete('/{id}', [ActifController::class, 'destroy']);
 
         // Fonctionnalités spécifiques
-        Route::put('/{idActif}/affecter-projet/{idProjet}', [ActifController::class, 'affecterProjet']);
+        Route::post('/{id}/affecter-projet', [ActifController::class, 'affecterProjet'])->name('actifs.affecterProjet');
         Route::put('/{idActif}/changer-statut/{statut}', [ActifController::class, 'changerStatut']);
         Route::get('/search', [ActifController::class, 'search'])->name('actifs.search');
 
@@ -145,15 +146,24 @@ Route::middleware([App\Http\Middleware\AuthECOM::class])->group(function () {
     });
 
     Route::prefix('projets')->group(function () {
-        Route::get('/', [ProjetController::class, 'index'])->name('projets.index'); // Liste
-        Route::get('/create', [ProjetController::class, 'create'])->name('projets.create'); // Formulaire création
-        Route::post('/', [ProjetController::class, 'store'])->name('projets.store'); // Enregistrer
-        Route::get('/{projet}/edit', [ProjetController::class, 'edit'])->name('projets.edit'); // Formulaire édition
-        Route::put('/{projet}', [ProjetController::class, 'update'])->name('projets.update'); // Mettre à jour
-        Route::delete('/{projet}', [ProjetController::class, 'destroy'])->name('projets.destroy'); // Supprimer
+        Route::get('/', [ProjetController::class, 'index'])->name('projets.index');
+        Route::get('/create', [ProjetController::class, 'create'])->name('projets.create');
+        Route::post('/', [ProjetController::class, 'store'])->name('projets.store');
+        Route::get('/{projet}/edit', [ProjetController::class, 'edit'])->name('projets.edit');
+        Route::put('/{projet}', [ProjetController::class, 'update'])->name('projets.update');
+        Route::delete('/{projet}', [ProjetController::class, 'destroy'])->name('projets.destroy');
 
-        // Activation / Désactivation
         Route::put('/{projet}/toggle', [ProjetController::class, 'toggleActif'])->name('projets.toggle');
+
+        // ✅ Route pour afficher le formulaire d’attribution (si modal ou page)
+        Route::get('{projet}/assign', [ProjetController::class, 'showAssignForm'])->name('projets.assign.form');
+
+        // ✅ Route pour enregistrer l’attribution générale
+        Route::post('{projet}/assign', [ProjetController::class, 'assignItems'])->name('projets.assign');
+        Route::post('/projets/{projet}/assign', [ProjetController::class, 'assignItem'])->name('projets.assignItem');
+
+        // ✅ 🆕 Route spécifique pour assignation d’un ACTIF (modal)
+        Route::post('/{projet}/assign-actif', [ProjetController::class, 'assignActif'])->name('projets.assignActif');
     });
 
 
@@ -181,7 +191,8 @@ Route::prefix('kits')->group(function () {
     Route::put('/{kit}', [KitController::class, 'update'])->name('kits.update'); // Mettre à jour
     Route::delete('/{kit}', [KitController::class, 'destroy'])->name('kits.destroy'); // Supprimer
         Route::get('/kits/search', [KitController::class, 'search'])->name('kits.search');
-});
+        Route::post('/{kit}/affecter-projet', [KitController::class, 'affecterProjet'])->name('kits.affecterProjet');
+    });
 
     Route::prefix('consommables')->group(function () {
         Route::get('/', [ConsommableController::class, 'index'])->name('consommables.index');
@@ -191,6 +202,9 @@ Route::prefix('kits')->group(function () {
         Route::delete('/{id}', [ConsommableController::class, 'destroy'])->name('consommables.destroy');
         Route::post('/{id}/entree', [ConsommableController::class, 'entreeStock'])->name('consommables.entree');
         Route::post('/{id}/sortie', [ConsommableController::class, 'sortieStock'])->name('consommables.sortie');
+
+        Route::post('/{id}/affecter-projet', [ConsommableController::class, 'affecterProjet'])->name('consommables.affecterProjet');
+
     });
 
 
@@ -206,8 +220,9 @@ Route::prefix('composants')->group(function () {
     // Entrée / sortie stock
     Route::post('/{composant}/entree', [ComposantController::class, 'entree'])->name('composants.entree');
     Route::post('/{composant}/sortie', [ComposantController::class, 'sortie'])->name('composants.sortie');
+        Route::post('/{composant}/affecter-projet', [ComposantController::class, 'affecterProjet'])->name('composants.affecterProjet');
 
-    // Recherche AJAX
+        // Recherche AJAX
     Route::get('/search', [ComposantController::class, 'search'])->name('composants.search');
 });
 
@@ -230,6 +245,41 @@ Route::prefix('fabricants')->group(function () {
     Route::get('/search', [FabricantController::class, 'search'])->name('fabricants.search');
 });
 
+
+
+
+// Liste de tous les emplacements
+Route::get('/emplacements', [EmplacementController::class, 'index'])->name('emplacements.index');
+
+// Créer un nouvel emplacement
+Route::post('/emplacements', [EmplacementController::class, 'store'])->name('emplacements.store');
+
+// Voir un emplacement précis (par son ID)
+Route::get('/emplacements/{id}', [EmplacementController::class, 'show'])->name('emplacements.show');
+
+// Mettre à jour un emplacement
+Route::put('/emplacements/{id}', [EmplacementController::class, 'update'])->name('emplacements.update');
+Route::patch('/emplacements/{id}', [EmplacementController::class, 'update']); // optionnel pour PATCH
+
+// Supprimer un emplacement
+Route::delete('/emplacements/{id}', [EmplacementController::class, 'destroy'])->name('emplacements.destroy');
+
+
+// Liste de tous les modèles
+Route::get('/models', [ModelController::class, 'index'])->name('models.index');
+
+// Créer un nouveau modèle
+Route::post('/models', [ModelController::class, 'store'])->name('models.store');
+
+// Voir un modèle précis (par son ID)
+Route::get('/models/{id}', [ModelController::class, 'show'])->name('models.show');
+
+// Mettre à jour un modèle
+Route::put('/models/{id}', [ModelController::class, 'update'])->name('models.update');
+Route::patch('/models/{id}', [ModelController::class, 'update']); // optionnel pour PATCH
+
+// Supprimer un modèle
+Route::delete('/models/{id}', [ModelController::class, 'destroy'])->name('models.destroy');
 
 
 });

@@ -16,7 +16,7 @@
                 </div>
 
                 <div class="row small-spacing">
-                    @if(in_array("add_composant", session("auto_action")))
+                    @if(in_array("add_comp", session("auto_action")))
                         <button type="button" class="btn btn-icon btn-icon-left btn-primary btn-sm waves-effect waves-light"
                             data-toggle="modal" data-target="#addComposant">
                             <i class="ico fa fa-plus"></i> Ajouter
@@ -75,6 +75,18 @@
                                                     </button>
                                                 </form>
                                             @endif
+
+                                            @if(in_array("assign_composant_project", session("auto_action")))
+                                                <button class="btn btn-success btn-xs" title="Attribuer à un projet" data-toggle="modal"
+                                                    data-target="#assignProjetModal" data-composant-id="{{ $composant->id }}">
+                                                    <i class="fa fa-project-diagram"></i>
+                                                </button>
+                                            @endif
+                                            <button class="btn btn-success btn-xs" title="Attribuer à un projet" data-toggle="modal"
+                                                data-target="#assignProjetModal" data-composant-id="{{ $composant->id }}">
+                                                <i class="fa fa-project-diagram"></i>
+                                            </button>
+
                                         </td>
                                     </tr>
 
@@ -160,70 +172,114 @@
 @endsection
 
 @section("model")
-    {{-- Modal ajout --}}
-    <div class="modal fade" id="addComposant" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form method="POST" action="{{ route('composants.store') }}">
-                    @csrf
+
+    <div class="modal fade" id="assignProjetModal" tabindex="-1" role="dialog" aria-labelledby="assignProjetLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form id="assignProjetForm" method="POST" action="">
+                @csrf
+                <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Ajouter un Composant</h4>
+                        <h5 class="modal-title">Attribuer le composant à un projet</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                     <div class="modal-body">
+                        <input type="hidden" name="composant_id" id="modalComposantId" value="">
                         <div class="form-group">
-                            <label>Nom</label>
-                            <input type="text" name="nom" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Catégorie</label>
-                            <select name="categorie_id" class="form-control" required>
-                                @foreach($categories as $categorie)
-                                    <option value="{{ $categorie->id }}">{{ $categorie->nom }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Emplacement</label>
-                            <select name="emplacement_id" class="form-control">
-                                @foreach($emplacements as $emplacement)
-                                    <option value="{{ $emplacement->id }}">{{ $emplacement->nom }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Fournisseur</label>
-                            <select name="fournisseur_id" class="form-control">
-                                @foreach($fournisseurs as $fournisseur)
-                                    <option value="{{ $fournisseur->id }}">{{ $fournisseur->nom }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Fabricant</label>
-                            <select name="fabricant_id" class="form-control">
-                                @foreach($fabricants as $fabricant)
-                                    <option value="{{ $fabricant->id }}">{{ $fabricant->nom }}</option>
+                            <label for="projetSelect">Projet</label>
+                            <select name="projet_id" id="projetSelect" class="form-control" required>
+                                <option value="">-- Choisir un projet --</option>
+                                @foreach($projets as $projet)
+                                    <option value="{{ $projet->id }}">{{ $projet->refprojet }}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
-                        <button type="submit" class="btn btn-primary">Ajouter</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-primary">Attribuer</button>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </div>
+
+        {{-- Modal ajout --}}
+        <div class="modal fade" id="addComposant" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="POST" action="{{ route('composants.store') }}">
+                        @csrf
+                        <div class="modal-header">
+                            <h4 class="modal-title">Ajouter un Composant</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Nom</label>
+                                <input type="text" name="nom" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Catégorie</label>
+                                <select name="categorie_id" class="form-control" required>
+                                    @foreach($categories as $categorie)
+                                        <option value="{{ $categorie->id }}">{{ $categorie->nom }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Emplacement</label>
+                                <select name="emplacement_id" class="form-control">
+                                    @foreach($emplacements as $emplacement)
+                                        <option value="{{ $emplacement->id }}">{{ $emplacement->nom }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Fournisseur</label>
+                                <select name="fournisseur_id" class="form-control">
+                                    @foreach($fournisseurs as $fournisseur)
+                                        <option value="{{ $fournisseur->id }}">{{ $fournisseur->nom }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Fabricant</label>
+                                <select name="fabricant_id" class="form-control">
+                                    @foreach($fabricants as $fabricant)
+                                        <option value="{{ $fabricant->id }}">{{ $fabricant->nom }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                            <button type="submit" class="btn btn-primary">Ajouter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 @endsection
 
 @section("js")
-<script>
-    document.getElementById("search").addEventListener("keyup", function () {
-        let search = this.value;
-        fetch(`{{ route('composants.index') }}?q=${search}`)
-            .then(res => res.text())
-            .then(html => document.getElementById("data").innerHTML = html);
-    });
-</script>
+    <script>
+        document.getElementById("search").addEventListener("keyup", function () {
+            let search = this.value;
+            fetch(`{{ route('composants.index') }}?q=${search}`)
+                .then(res => res.text())
+                .then(html => document.getElementById("data").innerHTML = html);
+        });
+
+                $('#assignProjetModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+                var composantId = button.data('composant-id');
+                var modal = $(this);
+                modal.find('#modalComposantId').val(composantId);
+                var url = "{{ url('composants') }}/" + composantId + "/affecter-projet";
+                modal.find('#assignProjetForm').attr('action', url);
+        });
+
+    </script>
 @endsection

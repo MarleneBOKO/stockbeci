@@ -16,6 +16,7 @@ class KitItem extends Model
         return $this->belongsTo(Kit::class);
     }
 
+    // Relation polymorphique simplifiée (optionnel)
     public function item()
     {
         switch ($this->item_type) {
@@ -27,6 +28,8 @@ class KitItem extends Model
                 return $this->belongsTo(Composant::class, 'item_id');
             case 'Consommable':
                 return $this->belongsTo(Consommable::class, 'item_id');
+            default:
+                return null;
         }
     }
 }

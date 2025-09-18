@@ -2,19 +2,19 @@
 
 @section('content')
 
-	<div class="col-lg-12 col-md-12 col-xs-12"> 
+	<div class="col-lg-12 col-md-12 col-xs-12">
 
 		<div class="box-content bordered info js__card">
-			
+
 			<h4 class="box-title with-control">
-				Liste des rôles NSIA :
+				Liste des rôles  :
 			<span class="controls">
 	     		<button type="button" class="control fa fa-minus js__card_minus"></button>
 			</span>
-			</h4> 
+			</h4>
 			<div class="js__card_content">
 				<div class="col-xs-12"><center style="border-radius: 10px;top: 75%;"> @include('flash::message')</center></div>
-				<div class="row small-spacing">   
+				<div class="row small-spacing">
 					@if(in_array("add_role", session("auto_action")))
 					<button type="button" style="margin-left:30px" class="btn btn-icon btn-icon-left btn-primary btn-sm waves-effect waves-light" data-toggle="modal" data-target="#add" ><i class="ico fa fa-plus" ></i>Ajouter</button>
 					@endif
@@ -28,11 +28,11 @@
 							</div>
 						</div>
 					</form>
-					<script>		
-						
+					<script>
+
 						function getXMLHttpRequest() {
 							var xhr = null;
-							
+
 							if (window.XMLHttpRequest || window.ActiveXObject) {
 								if (window.ActiveXObject) {
 									try {
@@ -41,26 +41,26 @@
 										xhr = new ActiveXObject("Microsoft.XMLHTTP");
 									}
 								} else {
-									xhr = new XMLHttpRequest(); 
+									xhr = new XMLHttpRequest();
 								}
 							} else {
 								alert("Votre navigateur ne supporte pas l'objet XMLHTTPRequest...");
 								return null;
 							}
-							
+
 							return xhr;
 						}
 						function readData(sData) {
 							//alert(sData);
 							var oSelect = document.getElementById("data");
-							
+
 							oSelect.innerHTML = sData;
 						}
-						
+
 						var y = document.getElementById("recherche");
 						y.addEventListener("blur", function () {
 						  search = document.getElementById("search").value;
-						  var xhr = getXMLHttpRequest(); 
+						  var xhr = getXMLHttpRequest();
 							xhr.open("GET", "{{route('listR')}}?check="+search+"&rec=1", true);
 							xhr.send(null);
 							xhr.onreadystatechange = function() {
@@ -73,7 +73,7 @@
 						var y = document.getElementById("recherche");
 						y.addEventListener("keydown", function () {
 						  search = document.getElementById("search").value;
-						  var xhr = getXMLHttpRequest(); 
+						  var xhr = getXMLHttpRequest();
 							xhr.open("GET", "{{route('listR')}}?check="+search+"&rec=1", true);
 							xhr.send(null);
 							xhr.onreadystatechange = function() {
@@ -86,7 +86,7 @@
 						var y = document.getElementById("recherche");
 						y.addEventListener("keyup", function () {
 						  search = document.getElementById("search").value;
-						  var xhr = getXMLHttpRequest(); 
+						  var xhr = getXMLHttpRequest();
 							xhr.open("GET", "{{route('listR')}}?check="+search+"&rec=1", true);
 							xhr.send(null);
 							xhr.onreadystatechange = function() {
@@ -95,9 +95,9 @@
 							    }
 							};
 						}, true);
-						
+
 					</script>
-					
+
                     <!------------------------------------------->
 
 			<div class="col-xs-12">
@@ -117,7 +117,7 @@
 								@forelse($list as $role)
 								<tr>
 									<th><span class="co-name">{{$role->code}}</span></th>
-									<td>{{$role->libelle}}</td> 
+									<td>{{$role->libelle}}</td>
 									<td>{{App\Providers\InterfaceServiceProvider::LibelleUser($role->user_action)}}</td>
 									<td>
                                     @if(in_array("update_role", session("auto_action")))
@@ -130,7 +130,7 @@
 									@endif
 
                                     @if(in_array("menu_role", session("auto_action")))
-									<button type="button" title="Menu"  class="btn btn-primary btn-circle btn-xs  margin-bottom-10 waves-effect waves-light"><a href="/menu-roles-{{$role->idRole}}" style="color:white;"><i class="ico fa fa-bars"></i></a> 
+									<button type="button" title="Menu"  class="btn btn-primary btn-circle btn-xs  margin-bottom-10 waves-effect waves-light"><a href="/menu-roles-{{$role->idRole}}" style="color:white;"><i class="ico fa fa-bars"></i></a>
 									</button>
 									@endif
 
@@ -145,7 +145,7 @@
 						</table>
 						{{$list->links()}}
 
-					</div> 
+					</div>
 				</div>
 				<!-- /.box-content -->
 			</div>

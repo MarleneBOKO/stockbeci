@@ -96,14 +96,19 @@ class ActifController extends Controller
         return response()->json(['message' => 'Actif supprimé']);
     }
 
-    public function affecterProjet($idActif, $idProjet)
+    public function affecterProjet(Request $request, $id)
     {
-        $actif = Actif::findOrFail($idActif);
-        $actif->projet_id = $idProjet;
+        $request->validate([
+            'projet_id' => 'required|exists:projets,id'
+        ]);
+
+        $actif = Actif::findOrFail($id);
+        $actif->projet_id = $request->projet_id;
         $actif->save();
 
-        return response()->json(['message' => 'Actif affecté au projet avec succès', 'actif' => $actif]);
+        return redirect()->back()->with('success', 'Actif affecté au projet avec succès.');
     }
+
 
     public function changerStatut($idActif, $statut)
     {

@@ -15,6 +15,12 @@ class Consommable extends Model
         'date_achat', 'cout_achat', 'notes', 'images'
     ];
 
+    public function projets()
+    {
+        return $this->belongsToMany(Projet::class, 'consommable_projet');
+    }
+
+
     public function categorie() { return $this->belongsTo(Categorie::class); }
     public function fabricant() { return $this->belongsTo(Fabricant::class); }
     public function emplacement() { return $this->belongsTo(Emplacement::class); }

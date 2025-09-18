@@ -8,12 +8,12 @@
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <meta name="csrf-token" content="{{csrf_token()}}" charset="utf-8">
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/iconnsia.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/icon.png">
 
   </head>
   <body>
-      
-      <center style="border-radius: 10px; margin-left: 50%; z-index: 1; left: 50%;top: 75%; transform: translate(-50%, 15%); width: 360px;"> @include('flash::message')</center> 
+
+      <center style="border-radius: 10px; margin-left: 50%; z-index: 1; left: 50%;top: 75%; transform: translate(-50%, 15%); width: 360px;"> @include('flash::message')</center>
 
 
   <section class="ftco-section">

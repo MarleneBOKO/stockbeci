@@ -25,31 +25,39 @@ class AdditionalMenusSeeder extends Seeder
         ]);
 
         // ----- ACTIONS POUR LES NOUVEAUX MENUS -----
-        DB::table('action_menus')->insert([
-            // Actions Projets (Menu 36)
-            ['id' => 121, 'Menu' => 36, 'action' => 'Créer Projet', 'code_dev' => 'add_projet', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 122, 'Menu' => 36, 'action' => 'Modifier Projet', 'code_dev' => 'update_projet', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 123, 'Menu' => 36, 'action' => 'Supprimer Projet', 'code_dev' => 'delete_projet', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 124, 'Menu' => 36, 'action' => 'Activer/Désactiver Projet', 'code_dev' => 'toggle_projet', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+      DB::table('action_menus')->insert([
+    // Actions Projets (Menu 36)
+    ['id' => 121, 'Menu' => 36, 'action' => 'Créer Projet', 'code_dev' => 'add_projet', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+    ['id' => 122, 'Menu' => 36, 'action' => 'Modifier Projet', 'code_dev' => 'update_projet', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+    ['id' => 123, 'Menu' => 36, 'action' => 'Supprimer Projet', 'code_dev' => 'delete_projet', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+    ['id' => 124, 'Menu' => 36, 'action' => 'Activer/Désactiver Projet', 'code_dev' => 'toggle_projet', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+    ['id' => 125, 'Menu' => 36, 'action' => 'Attribuer Kit au Projet', 'code_dev' => 'assign_kit_project', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+    ['id' => 126, 'Menu' => 36, 'action' => 'Attribuer Composant au Projet', 'code_dev' => 'assign_composant_project', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+    ['id' => 127, 'Menu' => 36, 'action' => 'Attribuer Consommable au Projet', 'code_dev' => 'assign_consommable_project', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+    ['id' => 128, 'Menu' => 36, 'action' => 'Attribuer Actif au Projet', 'code_dev' => 'assign_actif_project', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+
+    // Actions Catégories (Menu 37)
+    ['id' => 129, 'Menu' => 37, 'action' => 'Créer Catégorie', 'code_dev' => 'add_categorie', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+    ['id' => 130, 'Menu' => 37, 'action' => 'Modifier Catégorie', 'code_dev' => 'update_categorie', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+    ['id' => 131, 'Menu' => 37, 'action' => 'Supprimer Catégorie', 'code_dev' => 'delete_categorie', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+    ['id' => 132, 'Menu' => 37, 'action' => 'Rechercher Catégorie', 'code_dev' => 'search_categorie', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+
+    // Actions Fournisseurs (Menu 38)
+    ['id' => 133, 'Menu' => 38, 'action' => 'Ajouter Fournisseur', 'code_dev' => 'add_fournisseur', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+    ['id' => 134, 'Menu' => 38, 'action' => 'Modifier Fournisseur', 'code_dev' => 'update_fournisseur', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+    ['id' => 135, 'Menu' => 38, 'action' => 'Supprimer Fournisseur', 'code_dev' => 'delete_fournisseur', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+    ['id' => 136, 'Menu' => 38, 'action' => 'Rechercher Fournisseur', 'code_dev' => 'search_fournisseur', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+
+    // Actions Fabricants (Menu 39)
+    ['id' => 137, 'Menu' => 39, 'action' => 'Ajouter Fabricant', 'code_dev' => 'add_fabricant', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+    ['id' => 138, 'Menu' => 39, 'action' => 'Modifier Fabricant', 'code_dev' => 'update_fabricant', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+    ['id' => 139, 'Menu' => 39, 'action' => 'Supprimer Fabricant', 'code_dev' => 'delete_fabricant', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+    ['id' => 140, 'Menu' => 39, 'action' => 'Rechercher Fabricant', 'code_dev' => 'search_fabricant', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
+
+
 
             // Actions Catégories (Menu 37)
-            ['id' => 125, 'Menu' => 37, 'action' => 'Créer Catégorie', 'code_dev' => 'add_categorie', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 126, 'Menu' => 37, 'action' => 'Modifier Catégorie', 'code_dev' => 'update_categorie', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 127, 'Menu' => 37, 'action' => 'Supprimer Catégorie', 'code_dev' => 'delete_categorie', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 128, 'Menu' => 37, 'action' => 'Rechercher Catégorie', 'code_dev' => 'search_categorie', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
-
-            // Actions Fournisseurs (Menu 38)
-            ['id' => 129, 'Menu' => 38, 'action' => 'Ajouter Fournisseur', 'code_dev' => 'add_fournisseur', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 130, 'Menu' => 38, 'action' => 'Modifier Fournisseur', 'code_dev' => 'update_fournisseur', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 131, 'Menu' => 38, 'action' => 'Supprimer Fournisseur', 'code_dev' => 'delete_fournisseur', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 132, 'Menu' => 38, 'action' => 'Rechercher Fournisseur', 'code_dev' => 'search_fournisseur', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
-
-            // Actions Fabricants (Menu 39)
-            ['id' => 133, 'Menu' => 39, 'action' => 'Ajouter Fabricant', 'code_dev' => 'add_fabricant', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 134, 'Menu' => 39, 'action' => 'Modifier Fabricant', 'code_dev' => 'update_fabricant', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 135, 'Menu' => 39, 'action' => 'Supprimer Fabricant', 'code_dev' => 'delete_fabricant', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 136, 'Menu' => 39, 'action' => 'Rechercher Fabricant', 'code_dev' => 'search_fabricant', 'statut' => '0', 'created_at' => now(), 'updated_at' => now()],
-        ]);
+             ]);
 
         // ----- DROITS D'ACCÈS POUR LES NOUVEAUX MENUS -----
 

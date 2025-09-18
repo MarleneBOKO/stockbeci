@@ -7,10 +7,26 @@ use Illuminate\Http\Request;
 
 class EmplacementController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Emplacement::all();
+        $query = Emplacement::query();
+
+        if ($request->has('q') && !empty($request->q)) {
+            $query->where('nom', 'like', '%' . $request->q . '%')
+                ->orWhere('description', 'like', '%' . $request->q . '%');
+        }
+
+        $emplacements = $query->orderBy('id', 'desc')->paginate(10);
+
+        // Pour les requêtes AJAX (recherche), retourne juste une partie HTML
+        if ($request->ajax()) {
+            return view('emplacement._table', compact('emplacements'))->render();
+        }
+
+        // Sinon, la vue complète
+        return view('emplacements.index', compact('emplacements'));
     }
+
 
     public function store(Request $request)
     {

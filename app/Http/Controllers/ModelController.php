@@ -7,10 +7,20 @@ use Illuminate\Http\Request;
 
 class ModelController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return ModelMateriel::with(['categorie', 'fabricant', 'amortissement'])->get();
+        $query = ModelMateriel::with(['categorie', 'fabricant']);
+
+        if ($request->has('q')) {
+            $search = $request->q;
+            $query->where('nom', 'like', "%{$search}%");
+        }
+
+        $models = $query->paginate(10); // Pagination avec 10 éléments par page
+
+        return view('models.index', ['modeles' => $models]);
     }
+
 
     public function store(Request $request)
     {
@@ -19,7 +29,6 @@ class ModelController extends Controller
             'categorie_id' => 'nullable|exists:categories,id',
             'fabricant_id' => 'nullable|exists:fabricants,id',
             'model_num' => 'nullable|string',
-            'amortissement_id' => 'nullable|exists:amortissements,id',
             'qte_min' => 'nullable|integer',
             'findevie' => 'nullable|integer',
             'notes' => 'nullable|string',
@@ -32,7 +41,7 @@ class ModelController extends Controller
 
     public function show($id)
     {
-        return ModelMateriel::with(['categorie', 'fabricant', 'amortissement'])->findOrFail($id);
+        return ModelMateriel::with(['categorie', 'fabricant'])->findOrFail($id);
     }
 
     public function update(Request $request, $id)
@@ -43,7 +52,6 @@ class ModelController extends Controller
             'categorie_id' => 'nullable|exists:categories,id',
             'fabricant_id' => 'nullable|exists:fabricants,id',
             'model_num' => 'nullable|string',
-            'amortissement_id' => 'nullable|exists:amortissements,id',
             'qte_min' => 'nullable|integer',
             'findevie' => 'nullable|integer',
             'notes' => 'nullable|string',

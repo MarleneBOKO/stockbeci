@@ -22,8 +22,10 @@ class CategorieController extends Controller
             'image' => 'nullable|string',
             'notes' => 'nullable|string',
         ]);
+        Categorie::create($validated);
 
-        return Categorie::create($validated);
+        return redirect()->back()->with('success', 'Catégorie créé avec succès.');
+
     }
 
     public function show($id)

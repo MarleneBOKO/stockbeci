@@ -43,7 +43,9 @@ class AccessoireController extends Controller
             'images' => 'nullable|string',
         ]);
 
-        return Accessoire::create($validated);
+         Accessoire::create($validated);
+        return redirect()->back()->with('success', 'Accessoire créé avec succès.');
+
     }
 
     public function show($id)

@@ -7,7 +7,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 
-	<title>Commission NSIA - Maintenance</title>
+	<title>Commission  - Maintenance</title>
 	<link rel="stylesheet" href="assets/styles/style.min.css">
 
 	<!-- Waves Effect -->
@@ -31,8 +31,8 @@
 			<div class="title">LA PLATEFORME EST EN MAINTENANCE</div>
 		</div>
 		<h1 class="title-on-mobile">Erreur 501: MAINTENANCE</h1>
-		
-		
+
+
 	</div>
 </div>
 <script src="assets/scripts/jquery.min.js"></script>

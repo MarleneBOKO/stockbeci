@@ -13,7 +13,7 @@
     <title>Exemple2</title>
 
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="csstemplate/images/iconnsia.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="csstemplate/images/icon.png">
     <!-- Bootstrap Core CSS -->
     <link href="csstemplate/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Menu CSS -->
@@ -22,7 +22,7 @@
     <link href="csstemplate/bower_components/morrisjs/morris.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="csstemplate/css/style.css" rel="stylesheet">
-    
+
 </head>
 
 <body>
@@ -36,13 +36,13 @@
             <div class="navbar-header"> <a class="navbar-toggle hidden-sm hidden-md hidden-lg "
                     href="javascript:void(0)" data-toggle="collapse" data-target=".navbar-collapse"><i
                         class="ti-menu"></i></a>
-                <div class="top-left-part"><a class="logo" href="#"><img src="csstemplate/images/iconnsia.png" alt="user-img" width="25">&nbsp;<span class="hidden-xs" style="font-size: small;">NSIA VIE ASSURANCE</span></a></div>
+                <div class="top-left-part"><a class="logo" href="#"><img src="csstemplate/images/icon.png" alt="user-img" width="25">&nbsp;<span class="hidden-xs" style="font-size: small;"> VIE ASSURANCE</span></a></div>
                 <ul class="nav navbar-top-links navbar-left hidden-xs">
                     <li><a href="javascript:void(0)" class="open-close hidden-xs hidden-lg waves-effect waves-light"><i class="ti-arrow-circle-left ti-menu"></i>
                         </a></li>
                 </ul>
                 <ul class="nav navbar-top-links navbar-right pull-right">
-                    
+
                     <li>
                         <a class="profile-pic" href="#"> <img src="csstemplate/images/defaut.jpg" alt="user-img" width="36"
                                 class="img-circle"><b class="hidden-xs">Admin</b> </a>
@@ -55,7 +55,7 @@
             <div class="sidebar-nav navbar-collapse ">
                 <ul class="nav" id="side-menu">
                     <li class="sidebar-search hidden-sm hidden-md hidden-lg">
-                        
+
                     </li>
                     <li>
                         <a href="#" style="background-color:#001e60" class="waves-effect"><i class="glyphicon glyphicon-th-large"></i>
@@ -64,7 +64,7 @@
                     <li>
                         <a href="/admin" class="waves-effect"><i class="ti-layout fa-fw"></i>Prépare commission</a>
                     </li>
-                    
+
                 </ul>
                 <div class="center p-20">
                     <span class="hide-menu"><a href="#" target="_blank"
@@ -91,7 +91,7 @@
                     <div class="col-md-12 col-lg-12 col-sm-12">
                         <div class="white-box">
                             <div class="row row-in">
-                                
+
                             </div>
                         </div>
                     </div>
@@ -102,7 +102,7 @@
         <!-- /#page-wrapper -->
 
 
-        <footer class="footer text-center"> {{ date('Y')}} &copy; Nsia Vie Bénin - Commission </footer>
+        <footer class="footer text-center"> {{ date('Y')}} &copy;  Vie Bénin - Commission </footer>
     </div>
     <!-- /#wrapper -->
     <!-- jQuery -->

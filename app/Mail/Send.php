@@ -12,7 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 class Send extends Mailable
 {
     use Queueable, SerializesModels;
- 
+
     public $data;
     public $subject;
     public $view;
@@ -38,8 +38,8 @@ class Send extends Mailable
     {
         $dat = json_encode($this->data);
         return $this->subject($this->subject)
-        	    ->view($this->view, compact("dat"))
-        	    ->from("sendfees@nsiaviebenin.com", "NSIA VIE ASSURANCES")
-        	    ->replyTo("nviesoft@gmail.com");
+            ->view($this->view, compact("dat"))
+            ->from("sendfees@viebenin.com", " VIE ASSURANCES")
+            ->replyTo("nviesoft@gmail.com");
     }
 }

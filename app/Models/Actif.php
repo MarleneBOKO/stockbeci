@@ -20,6 +20,10 @@ class Actif extends Model
     public function statut() { return $this->belongsTo(EtiquetteEtat::class, 'statut_id'); }
     public function emplacement() { return $this->belongsTo(Emplacement::class); }
     public function fournisseur() { return $this->belongsTo(Fournisseur::class); }
-    public function projet() { return $this->belongsTo(Projet::class); }
+    public function projet()
+    {
+        return $this->belongsTo(Projet::class);
+    }
+
     public function utilisateur() { return $this->belongsTo(Utilisateur::class); }
 }

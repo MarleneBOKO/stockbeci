@@ -15,4 +15,10 @@ class Kit extends Model
     {
         return $this->hasMany(KitItem::class);
     }
+
+    public function projets()
+    {
+        return $this->belongsToMany(Projet::class, 'projet_kit');
+    }
+
 }

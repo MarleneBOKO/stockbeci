@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="fr"> 
+<html lang="fr">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, maximum-scale=0.8, initial-scale=0.8, user-scalable=0">
-	
+
 	<meta name="description" content="">
-	<meta name="author" content="NSIA VIE ASSURANCES"> 
+	<meta name="author" content=" VIE ASSURANCES">
 
 	<title>{{config('app.name')}}</title>
 
@@ -14,7 +14,7 @@
 	<link rel="stylesheet" href="assets/styles/style.min.css">
 	<link rel="stylesheet" href="assets/styles/profile.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.1/font/bootstrap-icons.css">
-	
+
 	<!-- Material Design Icon -->
 	<link rel="stylesheet" href="assets/fonts/material-design/css/materialdesignicons.css">
 
@@ -26,7 +26,7 @@
 
 	<!-- Sweet Alert -->
 	<link rel="stylesheet" href="assets/plugin/sweet-alert/sweetalert.css">
-	
+
 	<!-- Morris Chart -->
 	<link rel="stylesheet" href="assets/plugin/chart/morris/morris.css">
 
@@ -46,15 +46,15 @@
 
 	@yield('dstestyle')
 	 <script src="dste/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <script src="dste/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script> 
+    <script src="dste/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="dste/chosen.css">
     <script type="text/javascript" src="dste/chosen.jquery.min.js"></script>
     @yield('dstjs')
 
 </head>
 
-<body 
-oncontextmenu="return true" onkeydown="return true;" onmousedown="return true;" 
+<body
+oncontextmenu="return true" onkeydown="return true;" onmousedown="return true;"
 style="background-image: url('assets/images/fond.png'); background-repeat: no-repeat; background-size: cover; ">
 <div class="main-menu">
 	<header class="header">
@@ -76,9 +76,9 @@ style="background-image: url('assets/images/fond.png'); background-repeat: no-re
 				<div class="control-list">
 					<div class="control-item"><a href="{{ route('GPU') }}"><i class="fa fa-user"></i> Profil</a></div>
 					<div class="control-item"><a href="{{ route('pas') }}"><i class="fa fa-user"></i> Modifier son mot de passe</a></div>
-					<div class="control-item" ><i class="fa fa-sign-out"></i> 
+					<div class="control-item" ><i class="fa fa-sign-out"></i>
 					<button type="button" data-remodal-target="remodal" style="background-color: white" class="btn waves-effect waves-light">Déconnexion</button>
-					</div> 
+					</div>
 				</div>
 				<!-- /.control-list -->
 			</div>
@@ -92,12 +92,13 @@ style="background-image: url('assets/images/fond.png'); background-repeat: no-re
 		<div class="navigation">
 			<ul class="menu js__accordion" >
 				<li class="current" >
-					<a class="waves-effect" href="{{ route('home') }}"><i class="menu-icon mdi mdi-view-dashboard"></i><span>Tableau de bord</span></a> 
+					<a class="waves-effect" href="{{ route('home') }}"><i class="menu-icon mdi mdi-view-dashboard"></i><span>Tableau de bord</span></a>
 				</li>
 
 				@if(count(session('auto_menu')) != 0)
 
-				    @for($i=0; $i < count(session('auto_menu')); $i++) 
+				    @for($i=0; $i < count(session('auto_menu')); $i++)
+                    
 				        @php( $libelle = App\Providers\InterfaceServiceProvider::infomenu(session('auto_menu')[$i]) )
 				        @php( $chv = App\Providers\InterfaceServiceProvider::verifie_ss(session('auto_menu')[$i]) )
 				    	<li>
@@ -110,9 +111,9 @@ style="background-image: url('assets/images/fond.png'); background-repeat: no-re
 							@if(count(session('auto_ss_menu')) != 0 && $chv)
 								<ul class="sub-menu js__content">
 									@php( $all_ss = App\Providers\InterfaceServiceProvider::sous_menu(session('auto_ss_menu'), session('auto_menu')[$i]) )
-									@for($a=0; $a < count($all_ss); $a++) 
+									@for($a=0; $a < count($all_ss); $a++)
 									   @php( $lib = App\Providers\InterfaceServiceProvider::infomenu($all_ss[$a]) )
-									   
+
 									   <li><a class="waves-effect" href="{{route($lib->route)}}"><span>{{ $lib->libelleMenu }}</span></a></li>
 									@endfor
 								</ul>
@@ -127,7 +128,7 @@ style="background-image: url('assets/images/fond.png'); background-repeat: no-re
 	</div>
 	<!-- /.content -->
 </div>
-<!-- /.main-menu --> 
+<!-- /.main-menu -->
 
 <div class="fixed-navbar" style="background-image: url('assets/images/header.png'); background-repeat: no-repeat; background-size: cover; ">
 	<div class="pull-left" >
@@ -145,11 +146,11 @@ style="background-image: url('assets/images/fond.png'); background-repeat: no-re
 
 
 <div id="wrapper">
-	<div class="main-content" > 
-		
-		@yield('content')		
-		
-		<!-- /.row -->		
+	<div class="main-content" >
+
+		@yield('content')
+
+		<!-- /.row -->
 		<footer class="footer">
 			<ul class="list-inline">
 				<li>{{ date('Y')}} &copy; MY DATA PROGRAMMING - {{config('app.name')}}</li>
@@ -168,31 +169,31 @@ style="background-image: url('assets/images/fond.png'); background-repeat: no-re
 		Êtes-vous sûre de vouloir vous déconnecter ?
 		</p>
 	</div>
-	
+
 	<form action="{{ route('offU') }}">
 	    <button data-remodal-action="cancel" class="remodal-cancel">NON</button>
 	    <button  class="remodal-confirm" style="width:50px; color: white" type="submit">OUI</button>
 	</form>
 </div>
-		
+
 
 	@yield('js')
 	<script>
           $('#flash-overlay-modal').modal();
           $('div.alert').not('.alert-important').delay(6000).fadeOut(350);
     </script>
-      
+
 	<script src="assets/plugin/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
 	<script src="assets/scripts/modernizr.min.js"></script>
 	<script src="assets/plugin/bootstrap/js/bootstrap.min.js"></script>
-	
-	
-	
-	
+
+
+
+
 	<script src="assets/plugin/nprogress/nprogress.js"></script>
 	<script src="assets/plugin/sweet-alert/sweetalert.min.js"></script>
 	<script src="assets/plugin/waves/waves.min.js"></script>
-	
+
 	<script src="assets/plugin/modal/remodal/remodal.min.js"></script>
 
 	<script src="assets/scripts/main.min.js"></script>

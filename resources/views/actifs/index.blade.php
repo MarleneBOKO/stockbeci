@@ -75,6 +75,17 @@
                                                                 class="ico fa fa-trash"></i></a>
                                                     </button>
                                                 @endif
+                                                @if(in_array("assign_actif_project", session("auto_action")))
+                                                    <button class="btn btn-info btn-circle btn-xs" data-toggle="modal" data-target="#assignProjetActifModal"
+                                                        data-actif-id="{{ $actif->id }}">
+                                                        <i class="fa fa-project-diagram" title="Attribuer à un projet"></i>
+                                                    </button>
+                                                @endif
+                                                <button class="btn btn-info btn-circle btn-xs" data-toggle="modal" data-target="#assignProjetActifModal"
+                                                    data-actif-id="{{ $actif->id }}">
+                                                    <i class="fa fa-project-diagram" title="Attribuer à un projet"></i>
+                                                </button>
+
                                             </td>
                                         </tr>
                                     @empty
@@ -107,6 +118,16 @@
                 .then(res => res.text())
                 .then(html => document.getElementById("data").innerHTML = html);
         });
+
+                $('#assignProjetActifModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+                var actifId = button.data('actif-id');
+                var modal = $(this);
+                modal.find('#modalActifId').val(actifId);
+                var url = "{{ url('actifs') }}/" + actifId + "/affecter-projet";
+                modal.find('#assignProjetActifForm').attr('action', url);
+    });
+
     </script>
 @endsection
 
@@ -166,18 +187,6 @@
                                     <option value="">-- Sélectionner --</option>
                                     @foreach($emplacements as $emp)
                                         <option value="{{ $emp->id }}">{{ $emp->nom }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label">Projet</label>
-                            <div class="col-sm-8">
-                                <select name="projet_id" class="form-control">
-                                    <option value="">-- Sélectionner --</option>
-                                    @foreach($projets as $projet)
-                                        <option value="{{ $projet->id }}">{{ $projet->nom }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -253,4 +262,38 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="assignProjetActifModal" tabindex="-1" role="dialog" aria-labelledby="assignProjetLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form id="assignProjetActifForm" method="POST" action="">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Attribuer l'actif à un projet</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="actif_id" id="modalActifId" value="">
+                        <div class="form-group">
+                            <label for="projetSelect">Projet</label>
+                            <select name="projet_id" id="projetSelect" class="form-control" required>
+                                <option value="">-- Choisir un projet --</option>
+                                @foreach($projets as $projet)
+                                    <option value="{{ $projet->id }}">{{ $projet->refprojet }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-primary">Attribuer</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
 @endsection

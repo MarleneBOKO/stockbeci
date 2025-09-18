@@ -5,25 +5,25 @@
 	<div class="col-xs-12"><center style="border-radius: 10px;top: 75%;"> @include('flash::message')</center></div>
 
 @if(in_array("add_menu", session("auto_action")))
-	<div class="col-lg-12 col-md-12 col-xs-12"> 
+	<div class="col-lg-12 col-md-12 col-xs-12">
 
 		<div class="box-content bordered info js__card">
-			
+
 			<h4 class="box-title with-control">
 				Ajouter un menu :
-			<span class="controls"> 
+			<span class="controls">
 	     		<button type="button" class="control fa fa-minus js__card_minus"></button>
 			</span>
 			</h4>
 			<div class="js__card_content">
-				 
-				<div class="row small-spacing"> 
+
+				<div class="row small-spacing">
 			 <div class="col-xs-12">
 				<div class="box-content" >
 
 					<form class="form-horizontal" method="post" action="{{ route('AddMenu') }}" >
 							<input type="hidden" name="_token" value="{{ csrf_token() }}" />
-                            
+
 							<div class="form-group">
 								<div class="col-sm-6">
 									<label for="inp-type-1" style="vertical-align:middle; margin-top: 1%;" class="col-sm-12  ">Libellé menu : </label>
@@ -36,7 +36,7 @@
 								<div class="col-sm-12">
 									<input type="text" class="form-control" id="inp-type-2" name="titre" required>
 								</div>
-							    </div>			
+							    </div>
 							</div>
 							<div class="form-group">
 								<div class="col-sm-6">
@@ -50,7 +50,7 @@
 								<div class="col-sm-12">
 									<input type="text" class="form-control" id="inp-type-2" name="icon" >
 								</div>
-							    </div>			
+							    </div>
 							</div>
 							<div class="form-group">
 								<div class="col-sm-6">
@@ -71,16 +71,16 @@
 									<div class="col-sm-12">
 										<input type="text" class="form-control" id="inp-type-2" name="pos" required>
 									</div>
-							    </div>				
+							    </div>
 							</div>
-							
+
 							<div class="form-group" style="display: block;" id="Ajouter">
 							    <div class="col-sm-6">
 				                    <button type="submit" class="btn btn-primary btn-sm waves-effect waves-light" style="float:left; margin-top: 20px; margin-left: 15px; width: 25%;">Enregistrer
 				                    </button>
 							    </div>
 							</div>
-					</form>	
+					</form>
 				</div>
 				<!-- /.box-content -->
 			</div>
@@ -90,18 +90,18 @@
 	</div>
 @endif
 
-	<div class="col-lg-12 col-md-12 col-xs-12" > 
+	<div class="col-lg-12 col-md-12 col-xs-12" >
 
 		<div class="box-content bordered info js__card">
-			
+
 			<h4 class="box-title with-control">
-				Liste des Menus NSIA :
+				Liste des Menus  :
 			<span class="controls">
 	     		<button type="button" class="control fa fa-minus js__card_minus"></button>
 			</span>
 			</h4>
 			<div class="js__card_content">
-				
+
 				<div class="row small-spacing">
                 <!------------------------------------------>
 					<form class="form-horizontal" action="{{route('listM')}}" method="GET" id="recherche">
@@ -116,7 +116,7 @@
 							</div>
 						</div>
 					</form>
-					<script>		
+					<script>
 						var y = document.getElementById("recherche");
 						y.addEventListener("blur", function () {
 							const input = document.getElementById("sub")
@@ -134,9 +134,9 @@
 						  const input = document.getElementById("sub")
                           input.click()
 						}, true);
-						
+
 					</script>
-					
+
                     <!------------------------------------------->
 			<div class="col-xs-12">
 				<div class="box-content">
@@ -174,7 +174,7 @@
 											<button type="button" title="Supprimer"  class="btn btn-danger btn-circle btn-xs  margin-bottom-10 waves-effect waves-light"><a href="/delete-menu-{{$menu->idMenu}}" style="color:white;"><i class="ico fa fa-trash"></i></a> </button>
 										@endif
 
-									<?php 
+									<?php
 									$actions = App\Providers\InterfaceServiceProvider::recupactions($menu->idMenu);
 									$json = json_encode(array('actions' => $actions, 'idMenu' => $menu->idMenu ))
 									?>
@@ -192,7 +192,7 @@
 						</table>
 						{{$list->links()}}
 
-					</div> 
+					</div>
 				</div>
 				<!-- /.box-content -->
 			</div>
@@ -211,7 +211,7 @@
 	        $(".action").click(function () {
 	            var id = $(this).data('id');
 	            var div = document.getElementById('tst');
-	            
+
 	            if (id != 0) {
 
                     if(id.substr(-4, 4) == "acti"){

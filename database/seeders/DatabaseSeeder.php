@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             InitialDatabaseSeeder::class,
             AdditionalMenusSeeder::class,
+            EmplacementAndModelMenusSeeder::class,
         ]);
     }
 }

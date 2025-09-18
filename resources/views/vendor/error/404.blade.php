@@ -7,7 +7,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 
-	<title>Commission NSIA - Error</title>
+	<title>Commission  - Error</title>
 	<link rel="stylesheet" href="assets/styles/style.min.css">
 
 	<!-- Waves Effect -->
@@ -33,7 +33,7 @@
 		<h1 class="title-on-mobile">Erreur 404: LA PAGE N'EXISTE PAS</h1>
 		<p>Il semble que vous ayez pris un mauvais virage. Ne vous inquiétez pas... cela arrive aux meilleurs d'entre nous. Vous voudrez peut-être vérifier votre connexion Internet ou accès réseau. Voici une petite astuce qui pourrait vous aider à vous remettre sur la bonne voie.</p>
 		<a href="{{ route('log') }}" class="btn btn-info">Retour à la page de connexion</a>
-		
+
 	</div>
 </div>
 <script src="assets/scripts/jquery.min.js"></script>
