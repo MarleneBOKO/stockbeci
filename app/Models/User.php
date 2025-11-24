@@ -17,6 +17,10 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+
+    protected $primaryKey = 'idUser';
+    public $incrementing = true;
+    protected $keyType = 'int';
     protected $fillable = [
         'name',
         'email',
@@ -42,5 +46,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function actifs() { return $this->hasMany(Actif::class); }
+    public function actifs()
+    {
+        return $this->hasMany(Actif::class, 'utilisateur_id', 'idUser');
+    }
+
 }

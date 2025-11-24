@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('inventaire')->nullable();
             $table->string('serial')->nullable();
             $table->foreignId('model_id')->constrained('models')->onDelete('cascade');
-            $table->string('statut')->nullable();
+                $table->string('statut')->nullable();
             $table->text('notes')->nullable();
             $table->foreignId('emplacement_id')->constrained()->onDelete('cascade');
             $table->boolean('sur_demande')->default(false);

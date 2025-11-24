@@ -14,7 +14,35 @@ class GestionnaireController extends Controller
     //
     public static function dash(){
        
-        return view('admin.dashboard');
+        // Statistiques Actifs
+        $totalActifs = \App\Models\Actif::count();
+        $actifsDeployes = \App\Models\Actif::where('statut', 'Déployé')->count();
+        $actifsDisponibles = \App\Models\Actif::where('statut', 'Liste')->orWhere('statut', 'Prêt à être déployé')->count();
+        $actifsMaintenance = \App\Models\Actif::where('statut', 'En maintenance')->count();
+
+        // Statistiques Projets
+        $projetsEnCours = \App\Models\Projet::where('statut', 'en_cours')->count();
+        $projetsTermines = \App\Models\Projet::where('statut', 'termine')->count();
+
+        // Alertes Stock (Consommables avec stock faible, ex: < 5)
+        // Idéalement, le seuil devrait être défini dans la table consommables ou une config
+        $consommablesAlerte = \App\Models\Consommable::where('quantite', '<=', 5)->get();
+        $nbAlertes = $consommablesAlerte->count();
+
+        // Derniers mouvements (Traces)
+        $dernieresTraces = Trace::latest()->take(5)->get();
+
+        return view('admin.dashboard', compact(
+            'totalActifs', 
+            'actifsDeployes', 
+            'actifsDisponibles', 
+            'actifsMaintenance',
+            'projetsEnCours', 
+            'projetsTermines',
+            'consommablesAlerte',
+            'nbAlertes',
+            'dernieresTraces'
+        ));
     }
 
     public static function listusers(){

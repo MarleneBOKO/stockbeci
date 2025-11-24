@@ -9,6 +9,8 @@ use App\Models\Projet;
 use App\Models\Categorie;
 use App\Models\Emplacement;
 use App\Models\Fournisseur;
+use Illuminate\Support\Facades\Log;  // Ajoutez en haut du contrôleur
+
 use App\Models\Fabricant;
 class ConsommableController extends Controller
 {
@@ -20,9 +22,14 @@ class ConsommableController extends Controller
         $emplacements = Emplacement::all();
         $fournisseurs = Fournisseur::all();
         $fabricants = Fabricant::all();
-        $list = Consommable::with('item')
-            ->orderBy('nom')
-            ->paginate(10);
+
+        $query = Consommable::query();
+
+        if ($request->filled('nom')) {
+            $query->where('nom', 'like', '%' . $request->nom . '%');
+        }
+
+        $list = $query->orderBy('nom')->paginate(10);
 
         if ($request->ajax()) {
             return view('consommables._table', compact('list'))->render();
@@ -30,6 +37,7 @@ class ConsommableController extends Controller
 
         return view('consommables.index', compact('list', 'projets', 'categories', 'emplacements', 'fournisseurs', 'fabricants'));
     }
+
 
     // Recherche AJAX
     public function search(Request $request)
@@ -101,18 +109,43 @@ class ConsommableController extends Controller
         return back();
     }
 
+
     public function affecterProjet(Request $request, $id)
     {
-        $request->validate([
-            'projet_id' => 'required|exists:projets,id'
-        ]);
+        // Log d'entrée pour confirmer que la méthode est appelée
+        Log::info('affecterProjet appelée', ['id' => $id, 'request_data' => $request->all()]);
+
+        // Validation précoce pour l'ID
+        if (!is_numeric($id) || $id <= 0) {
+            Log::error('ID invalide', ['id' => $id]);
+            return redirect()->back()->with('error', 'ID de consommable invalide.');
+        }
+
+        try {
+            $request->validate([
+                'projet_id' => 'required|exists:projets,id'
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation échouée', ['errors' => $e->errors()]);
+            return redirect()->back()->withErrors($e->validator)->withInput();
+        }
 
         $consommable = Consommable::findOrFail($id);
         $projetId = $request->projet_id;
 
-        if (!$consommable->projets()->where('projet_id', $projetId)->exists()) {
+        // Vérifiez si déjà attaché
+        $exists = $consommable->projets()->where('projet_id', $projetId)->exists();
+        Log::info('Vérification attachment', ['exists' => $exists, 'projet_id' => $projetId]);
+
+        if (!$exists) {
             $consommable->projets()->attach($projetId);
+            Log::info('Attachment effectué', ['consommable_id' => $id, 'projet_id' => $projetId]);
+        } else {
+            Log::info('Déjà attaché, rien à faire');
         }
+
+        // Pour tester : dd() pour stopper et voir les données (retirez après)
+        // dd('Méthode exécutée', $request->all(), $consommable->projets);
 
         return redirect()->back()->with('success', 'Consommable attribué au projet avec succès.');
     }

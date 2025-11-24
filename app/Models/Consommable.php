@@ -17,8 +17,12 @@ class Consommable extends Model
 
     public function projets()
     {
-        return $this->belongsToMany(Projet::class, 'consommable_projet');
+        return $this->belongsToMany(Projet::class, 'projet_consommable', 'consommable_id', 'projet_id');
     }
+    protected $casts = [
+        'date_achat' => 'datetime',
+    ];
+
 
 
     public function categorie() { return $this->belongsTo(Categorie::class); }

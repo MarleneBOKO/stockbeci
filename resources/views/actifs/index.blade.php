@@ -57,7 +57,7 @@
                                             <td>{{ $actif->inventaire }}</td>
                                             <td>{{ $actif->nom_actif }}</td>
                                             <td>{{ $actif->model->nom ?? '-' }}</td>
-                                            <td>{{ $actif->statut->libelle ?? '-' }}</td>
+                                            <td>{{ $actif->statut ?? '-' }}</td> {{-- Changé : plus de ->libelle --}}
                                             <td>{{ $actif->emplacement->nom ?? '-' }}</td>
                                             <td>{{ $actif->projet->nom ?? '-' }}</td>
                                             <td>{{ $actif->utilisateur->nom ?? '-' }}</td>
@@ -76,16 +76,11 @@
                                                     </button>
                                                 @endif
                                                 @if(in_array("assign_actif_project", session("auto_action")))
-                                                    <button class="btn btn-info btn-circle btn-xs" data-toggle="modal" data-target="#assignProjetActifModal"
-                                                        data-actif-id="{{ $actif->id }}">
+                                                    <button class="btn btn-info btn-circle btn-xs" data-toggle="modal"
+                                                        data-target="#assignProjetActifModal" data-actif-id="{{ $actif->id }}">
                                                         <i class="fa fa-project-diagram" title="Attribuer à un projet"></i>
                                                     </button>
                                                 @endif
-                                                <button class="btn btn-info btn-circle btn-xs" data-toggle="modal" data-target="#assignProjetActifModal"
-                                                    data-actif-id="{{ $actif->id }}">
-                                                    <i class="fa fa-project-diagram" title="Attribuer à un projet"></i>
-                                                </button>
-
                                             </td>
                                         </tr>
                                     @empty
@@ -119,15 +114,14 @@
                 .then(html => document.getElementById("data").innerHTML = html);
         });
 
-                $('#assignProjetActifModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-                var actifId = button.data('actif-id');
-                var modal = $(this);
-                modal.find('#modalActifId').val(actifId);
-                var url = "{{ url('actifs') }}/" + actifId + "/affecter-projet";
-                modal.find('#assignProjetActifForm').attr('action', url);
-    });
-
+        $('#assignProjetActifModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var actifId = button.data('actif-id');
+            var modal = $(this);
+            modal.find('#modalActifId').val(actifId);
+            var url = "{{ url('actifs') }}/" + actifId + "/affecter-projet";
+            modal.find('#assignProjetActifForm').attr('action', url);
+        });
     </script>
 @endsection
 
@@ -141,6 +135,16 @@
                     <div class="modal-header">
                         <h4 class="modal-title">Ajouter un Actif</h4>
                     </div>
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="col-sm-4 control-label">Nom Actif</label>
@@ -168,14 +172,20 @@
                             </div>
                         </div>
 
+                        {{-- Champ Statut (optionnel, hardcodé avec strings) --}}
                         <div class="form-group">
                             <label class="col-sm-4 control-label">Statut</label>
                             <div class="col-sm-8">
-                                <select name="statut_id" class="form-control">
+                                <select name="statut" class="form-control"> {{-- Changé : name="statut" (pas _id) --}}
                                     <option value="">-- Sélectionner --</option>
-                                    @foreach($statuts as $statut)
-                                        <option value="{{ $statut->id }}">{{ $statut->libelle }}</option>
-                                    @endforeach
+                                    <option value="Liste">Liste</option>
+                                    <option value="Déployé">Déployé</option>
+                                    <option value="Prêt à être déployé">Prêt à être déployé</option>
+                                    <option value="En instance">En instance</option>
+                                    <option value="Archivés">Archivés</option>
+                                    <option value="Sur demande">Sur demande</option>
+                                    <option value="Audit">Audit</option>
+                                    <option value="Supprimé">Supprimé</option>
                                 </select>
                             </div>
                         </div>
@@ -187,18 +197,6 @@
                                     <option value="">-- Sélectionner --</option>
                                     @foreach($emplacements as $emp)
                                         <option value="{{ $emp->id }}">{{ $emp->nom }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label">Utilisateur</label>
-                            <div class="col-sm-8">
-                                <select name="utilisateur_id" class="form-control">
-                                    <option value="">-- Sélectionner --</option>
-                                    @foreach($users as $user)
-                                        <option value="{{ $user->idUser }}">{{ $user->nom }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -263,6 +261,7 @@
         </div>
     </div>
 
+    {{-- Modal Attribution Projet (inchangé) --}}
     <div class="modal fade" id="assignProjetActifModal" tabindex="-1" role="dialog" aria-labelledby="assignProjetLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">

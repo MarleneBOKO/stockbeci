@@ -9,6 +9,7 @@ use App\Models\Fournisseur;
 use App\Models\Fabricant;
 use Illuminate\Http\Request;
 use App\Models\Projet;
+use Illuminate\Support\Facades\Log;
 class ComposantController extends Controller
 {
     public function index()
@@ -97,23 +98,34 @@ class ComposantController extends Controller
         return redirect()->route('composants.index')->with('success', 'Stock mis à jour');
     }
 
-
     public function affecterProjet(Request $request, $id)
     {
-        $request->validate([
-            'projet_id' => 'required|exists:projets,id'
-        ]);
+        Log::info('affecterProjet appelée', ['id' => $id, 'request_data' => $request->all()]);
 
-        $composant = Composant::findOrFail($id);
-        $projetId = $request->projet_id;
-
-        // Empêche l’attachement en double
-        if (!$composant->projets()->where('projet_id', $projetId)->exists()) {
-            $composant->projets()->attach($projetId);
-        }
-
-        return redirect()->back()->with('success', 'Composant attribué au projet avec succès.');
-    }
+        if (!is_numeric($id) || $id <= 0) {
+               Log::error('ID invalide', ['id' => $id]);
+               return redirect()->back()->with('error', 'ID de composant invalide.');
+           }
+           try {
+               $request->validate([
+                   'projet_id' => 'required|exists:projets,id'
+               ]);
+           } catch (\Illuminate\Validation\ValidationException $e) {
+               Log::error('Validation échouée', ['errors' => $e->errors()]);
+               return redirect()->back()->withErrors($e->validator)->withInput();
+           }
+           $composant = Composant::findOrFail($id);  // Changez en Composant
+           $projetId = $request->projet_id;
+           $exists = $composant->projets()->where('projet_id', $projetId)->exists();
+           Log::info('Vérification attachment', ['exists' => $exists, 'projet_id' => $projetId]);
+           if (!$exists) {
+               $composant->projets()->attach($projetId);
+               Log::info('Attachment effectué', ['composant_id' => $id, 'projet_id' => $projetId]);
+           } else {
+               Log::info('Déjà attaché, rien à faire');
+           }
+           return redirect()->back()->with('success', 'Composant attribué au projet avec succès.');
+       }
 
 
     public function search(Request $request)

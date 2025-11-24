@@ -12,49 +12,76 @@ use App\Models\Projet;
 use App\Models\User;
 use App\Models\ModelMateriel;
 use App\Models\EtiquetteEtat;
+use Illuminate\Support\Facades\Auth;
 
 class ActifController extends Controller
 {
     public function index()
     {
-        $list = Actif::with(['model', 'statut', 'emplacement', 'fournisseur', 'projet', 'utilisateur'])->paginate(10); // ou get()
+        $list = Actif::with(['model', 'emplacement', 'fournisseur', 'projet', 'utilisateur'])->paginate(10); // ou get()
 
         // Pour les selects dans le modal
         $models = ModelMateriel::all();
-        $statuts = EtiquetteEtat::all();
         $emplacements = Emplacement::all();
         $projets = Projet::all();
         $users = User::all();
 
-        return view('actifs.index', compact('list', 'models', 'statuts', 'emplacements', 'projets', 'users'));
+        return view('actifs.index', compact('list', 'models', 'emplacements', 'projets', 'users'));
     }
+
 
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'inventaire' => 'nullable|string',
-            'serial' => 'nullable|string',
+        // Vérifier la permission d'ajout
+        if (!in_array("add_actif", session("auto_action", []))) {
+            return back()->withErrors(['error' => 'Accès non autorisé pour créer un actif.']);
+        }
+
+        // Règles de validation
+        $validatedData = $request->validate([
+            'nom_actif' => 'required|string|max:255',
+            'inventaire' => 'nullable|string|max:100|unique:actifs,inventaire',
             'model_id' => 'required|exists:models,id',
-            'statut_id' => 'nullable|exists:etiquette_etats,id',
-            'notes' => 'nullable|string',
+            'statut' => 'nullable|string|in:Liste,Déployé,Prêt à être déployé,En instance,Archivés,Sur demande,Audit,Supprimé',
             'emplacement_id' => 'required|exists:emplacements,id',
-            'sur_demande' => 'boolean',
-            'image' => 'nullable|string',
-            'nom_actif' => 'nullable|string',
-            'garantie' => 'nullable|string',
-            'date_verification' => 'nullable|date',
             'date_achat' => 'nullable|date',
-            'date_fin_vie' => 'nullable|date',
-            'fournisseur_id' => 'nullable|exists:fournisseurs,id',
-            'cout_achat' => 'nullable|numeric',
-            'projet_id' => 'nullable|exists:projets,id',
-            'utilisateur_id' => 'nullable|exists:users,idUser',
-            'valeur_actuelle' => 'nullable|numeric',
+            'date_fin_vie' => 'nullable|date|after_or_equal:date_achat',
+            'garantie' => 'nullable|string|max:255',
+            'notes' => 'nullable|string',
+            'cout_achat' => 'nullable|numeric|min:0',
+            'valeur_actuelle' => 'nullable|numeric|min:0',
+            'image' => 'nullable|string|max:500',
+        ], [
+            'nom_actif.required' => 'Le nom de l\'actif est obligatoire.',
+            'model_id.required' => 'Veuillez sélectionner un modèle.',
+            'emplacement_id.required' => 'Veuillez sélectionner un emplacement.',
+            'inventaire.unique' => 'Ce numéro d\'inventaire existe déjà.',
+            'statut.in' => 'Le statut sélectionné n\'est pas valide.',
         ]);
 
-        return Actif::create($validated);
+        // Ajouter l'utilisateur connecté
+        $utilisateur = Auth::user();
+        $validatedData['utilisateur_id'] = $utilisateur ? $utilisateur->idUser : null;
+
+        if (!$validatedData['utilisateur_id']) {
+            return back()->withErrors(['error' => 'Utilisateur non authentifié.'])->withInput();
+        }
+
+
+        $validatedData['statut'] = $validatedData['statut'] ?: 'Liste';
+
+        try {
+            Actif::create($validatedData);
+            return redirect()->route('actifs.index')->with('success', 'Actif créé avec succès !');
+        } catch (\Exception $e) {
+            \Log::error('Erreur création actif : ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Erreur lors de la création : ' . $e->getMessage()])->withInput();
+        }
     }
+
+
+
 
     public function show($id)
     {
@@ -81,19 +108,19 @@ class ActifController extends Controller
             'fournisseur_id' => 'nullable|exists:fournisseurs,id',
             'cout_achat' => 'nullable|numeric',
             'projet_id' => 'nullable|exists:projets,id',
-            'utilisateur_id' => 'nullable|exists:users,idUser',
+            'idUser' => 'nullable|exists:users,idUser',
             'valeur_actuelle' => 'nullable|numeric',
         ]);
 
         $actif->update($validated);
-        return $actif;
+        return redirect()->route('actifs.index')->with('success', 'Actif mis à jour avec succès.');
     }
 
     public function destroy($id)
     {
         $actif = Actif::findOrFail($id);
         $actif->delete();
-        return response()->json(['message' => 'Actif supprimé']);
+        return redirect()->route('actifs.index')->with('success', 'Actif supprimé avec succès.');
     }
 
     public function affecterProjet(Request $request, $id)

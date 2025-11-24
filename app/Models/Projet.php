@@ -17,7 +17,7 @@ class Projet extends Model
 
     public function consommables()
     {
-        return $this->belongsToMany(Consommable::class, 'projet_consommable');
+        return $this->belongsToMany(Consommable::class, 'projet_consommable', 'projet_id', 'consommable_id');
     }
 
     public function projets()

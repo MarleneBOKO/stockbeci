@@ -82,9 +82,12 @@ class ProjetController extends Controller
 
     public function showAssignForm(Projet $projet)
     {
-        $actifs = Actif::all();
-        $consommables = Consommable::all();
-        $composants = Composant::all();
+        // On ne récupère que les actifs disponibles (Statut 'Liste', 'En stock', etc.)
+        // On peut utiliser la méthode du modèle ou une requête brute pour la performance
+        $actifs = Actif::whereIn('statut', ['Liste', 'Prêt à être déployé', 'En stock', 'Restitué'])->get();
+        
+        $consommables = Consommable::where('quantite_stock', '>', 0)->get();
+        $composants = Composant::where('quantite_stock', '>', 0)->get();
         $kits = Kit::all();
 
         return view('projets.assign', compact('projet', 'actifs', 'consommables', 'composants', 'kits'));
@@ -146,33 +149,31 @@ class ProjetController extends Controller
     {
         $request->validate([
             'actif_id' => 'required|exists:actifs,id',
-            'quantite' => 'required|integer|min:1',
         ]);
 
         $actif = Actif::findOrFail($request->actif_id);
 
-        if ($actif->quantite_stock < $request->quantite) {
-            return back()->withErrors(['quantite' => 'Stock insuffisant pour cet actif.']);
+        // Vérification de la disponibilité
+        if (!$actif->estDisponible()) {
+            return back()->withErrors(['actif_id' => 'Cet actif n\'est pas disponible (Statut actuel : ' . $actif->statut . ').']);
         }
 
-        // Attribuer l'actif au projet avec la quantité
-        $projet->actifs()->attach($actif->id, ['quantite' => $request->quantite]);
-
-        // Mettre à jour le stock
-        $actif->quantite_stock -= $request->quantite;
+        // Affectation directe (1 actif = 1 projet)
+        $actif->projet_id = $projet->id;
+        $actif->statut = 'Déployé';
         $actif->save();
 
-        return redirect()->route('projets.index')->with('success', 'Actif attribué avec succès.');
+        // Optionnel : Ajouter une trace/historique ici si nécessaire
+        // Trace::create([...]);
+
+        return redirect()->route('projets.index')->with('success', 'Actif affecté au projet avec succès.');
     }
-
-
-
 
     public function assignItem(Request $request, Projet $projet)
     {
         // Validation des champs
         $request->validate([
-            'type' => 'required|in:actif,consommable,composant,kit',
+            'type' => 'required|in:consommable,composant,kit', // Actif est géré séparément
             'item_id' => 'required|integer',
             'quantite' => 'required|integer|min:1',
         ]);
@@ -181,60 +182,60 @@ class ProjetController extends Controller
         $itemId = $request->input('item_id');
         $quantite = $request->input('quantite');
 
-        // Vérification du stock disponible
-        switch ($type) {
-            case 'actif':
-                $item = Actif::findOrFail($itemId);
-                break;
+        $item = null;
+        $relation = null;
 
+        // Sélection du modèle et de la relation
+        switch ($type) {
             case 'consommable':
                 $item = Consommable::findOrFail($itemId);
+                $relation = 'consommables';
                 break;
 
             case 'composant':
                 $item = Composant::findOrFail($itemId);
+                $relation = 'composants';
                 break;
 
             case 'kit':
                 $item = Kit::findOrFail($itemId);
+                $relation = 'kits';
                 break;
-
+            
             default:
                 return back()->withErrors(['type' => 'Type d’élément invalide.']);
         }
 
         // Vérification du stock
-        if ($item->quantite_stock < $quantite) {
-            return back()->withErrors(['quantite' => 'Stock insuffisant pour cet élément.']);
+        if ($type !== 'kit') {
+            if ($item->quantite < $quantite) {
+                return back()->withErrors(['quantite' => "Stock insuffisant pour " . ($item->nom ?? $item->libelle) . ". (Disponible : " . $item->quantite . ")"]);
+            }
+
+            // Déduction du stock
+            $item->quantite -= $quantite;
+            $item->save();
+        } else {
+            // Pour les kits, on ne décrémente pas de stock global (car pas de colonne quantite)
+            // Idéalement, il faudrait décrémenter les composants du kit ici.
+            // TODO: Implémenter la décomposition du kit et la sortie des composants.
         }
 
-        // Déduction du stock
-        $item->quantite_stock -= $quantite;
-        $item->save();
+        // Enregistrement de l’attribution dans la table pivot
+        // On utilise attach() ou syncWithoutDetaching() pour ajouter sans écraser
+        
+        $existingPivot = $projet->{$relation}()->where('id', $itemId)->first();
 
-        // Enregistrement de l’attribution
-        // Tu dois adapter cette partie selon ton modèle/pivot
-        // Exemple générique (si relation ManyToMany avec table pivot personnalisée)
-
-        switch ($type) {
-            case 'actif':
-                $projet->actifs()->attach($itemId, ['quantite' => $quantite]);
-                break;
-
-            case 'consommable':
-                $projet->consommables()->attach($itemId, ['quantite' => $quantite]);
-                break;
-
-            case 'composant':
-                $projet->composants()->attach($itemId, ['quantite' => $quantite]);
-                break;
-
-            case 'kit':
-                $projet->kits()->attach($itemId, ['quantite' => $quantite]);
-                break;
+        if ($existingPivot) {
+            // Si déjà présent, on augmente la quantité
+            $newPivotQty = $existingPivot->pivot->quantite + $quantite;
+            $projet->{$relation}()->updateExistingPivot($itemId, ['quantite' => $newPivotQty]);
+        } else {
+            // Sinon on attache
+            $projet->{$relation}()->attach($itemId, ['quantite' => $quantite]);
         }
 
-        return redirect()->route('projets.index')->with('success', 'Élément attribué avec succès !');
+        return redirect()->route('projets.index')->with('success', 'Élément attribué avec succès ! Stock mis à jour.');
     }
 }
 
